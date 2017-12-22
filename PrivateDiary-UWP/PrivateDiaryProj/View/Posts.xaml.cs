@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -55,6 +56,8 @@ namespace PrivateDiary.View
                 TextBoxTitle.Focus(FocusState.Programmatic);
                 TextBoxTitle.SelectAll();
             }
+
+            ClosePaneButton.Visibility = Visibility;
         }
 
         private void AddPost(object sender, RoutedEventArgs e)
@@ -207,6 +210,19 @@ namespace PrivateDiary.View
         {
             SplitView.IsPaneOpen = true;
             OpenPaneButton.Visibility = Visibility.Collapsed;
+        }
+
+        private async void TitleList_OnDragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
+        {
+            var post = args.Items.First() as Post;
+
+            if (post == null)
+            {
+                return;
+            }
+
+            var index = PostList.IndexOf(post);
+            await _postService.UpdatePosition(post.Id, index);
         }
     }
 }

@@ -20,8 +20,8 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ListBox Grid.Row="0" x:Name="TitleList" SelectionMode="Single" ItemsSource="{x:Bind PostList}" SelectionChanged="ShowPost">
-                    <ListBox.ItemTemplate>
+                <ListView Grid.Row="0" AllowDrop="True" CanReorderItems="True" CanDragItems="True" DragItemsCompleted="TitleList_OnDragItemsCompleted" x:Name="TitleList" SelectionMode="Single" ItemsSource="{x:Bind PostList}" SelectionChanged="ShowPost">
+                    <ListView.ItemTemplate>
                         <DataTemplate x:DataType="model:Post">
                             <Grid RightTapped="Grid_RightTapped">
                                 <FlyoutBase.AttachedFlyout>
@@ -35,14 +35,14 @@
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                    </ListView.ItemTemplate>
+                </ListView>
 
                 <StackPanel Grid.Row="1" Orientation="Horizontal">
                     <CommandBar Background="Transparent" IsOpen="False">
                         <AppBarButton Label="Add" Icon="Add" Click="AddPost" />
                         <AppBarButton Label="Delete" Icon="Delete" Click="RemovePost" />
-                        <AppBarButton Label="Close" Icon="ClosePane" Click="ClosePane" />
+                        <AppBarButton Label="Close" Icon="ClosePane" Click="ClosePane" Visibility="Collapsed" x:Name="ClosePaneButton" />
                     </CommandBar>
                 </StackPanel>
             </Grid>

@@ -23,7 +23,11 @@ namespace PrivateDiary.Service
                 using (var db = new DataContext())
                 {
                     db.Posts.AddAsync(post);
-                    db.SaveChanges();
+                    db.SaveChangesAsync();
+
+                    post.Order = post.Id;
+                    db.Entry(post).State = EntityState.Modified;
+                    db.SaveChangesAsync();
                 }
                 post.Title = Crypter.Decrypt(post.Title);
                 return post;
@@ -38,7 +42,7 @@ namespace PrivateDiary.Service
         {
             using (var db = new DataContext())
             {
-                var encryptedPosts = db.Posts.Where(post => post.UserId == Constant.User.Id).ToArray();
+                var encryptedPosts = db.Posts.Where(post => post.UserId == Constant.User.Id).OrderBy(entity => entity.Order).ToArray();
                 var decryptedPosts = new List<Post>(encryptedPosts.Length);
 
                 foreach (Post encryptedPost in encryptedPosts)
@@ -91,6 +95,18 @@ namespace PrivateDiary.Service
             {
                 var post = db.Posts.Find(postId);
                 db.Remove(post);
+                await db.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdatePosition(int postId, int position)
+        {
+            using (var db = new DataContext())
+            {
+                var post = db.Posts.Find(postId);
+                post.Order = position;
+
+                db.Entry(post).State = EntityState.Modified;
                 await db.SaveChangesAsync();
             }
         }

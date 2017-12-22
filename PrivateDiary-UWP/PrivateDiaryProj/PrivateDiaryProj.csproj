@@ -108,6 +108,14 @@
     <Compile Include="Migrations\20171111162847_PostsTable.designer.cs">
       <DependentUpon>20171111162847_PostsTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20171222195142_AddOrderToPostsTable.cs" />
+    <Compile Include="Migrations\20171222195142_AddOrderToPostsTable.designer.cs">
+      <DependentUpon>20171222195142_AddOrderToPostsTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20171222195840_SetOrderInPostsTable.cs" />
+    <Compile Include="Migrations\20171222195840_SetOrderInPostsTable.designer.cs">
+      <DependentUpon>20171222195840_SetOrderInPostsTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\Constant.cs" />
     <Compile Include="Model\Post.cs" />
     <Compile Include="Properties\Annotations.cs" />
