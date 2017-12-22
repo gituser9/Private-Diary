@@ -196,5 +196,17 @@ namespace PrivateDiary.View
 
             _currentPost = null;
         }
+
+        private void ClosePane(object sender, RoutedEventArgs e)
+        {
+            SplitView.IsPaneOpen = false;
+            OpenPaneButton.Visibility = Visibility.Visible;
+        }
+
+        private void OpenPane(object sender, RoutedEventArgs e)
+        {
+            SplitView.IsPaneOpen = true;
+            OpenPaneButton.Visibility = Visibility.Collapsed;
+        }
     }
 }

@@ -13,7 +13,7 @@
         <converter:DateFormatConverter x:Name="DateToStringFormatConverter"/>
     </Page.Resources>
 
-    <SplitView Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" IsPaneOpen="True" DisplayMode="Inline">
+    <SplitView Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" IsPaneOpen="True" DisplayMode="Inline" x:Name="SplitView">
         <SplitView.Pane>
             <Grid>
                 <Grid.RowDefinitions>
@@ -39,8 +39,11 @@
                 </ListBox>
 
                 <StackPanel Grid.Row="1" Orientation="Horizontal">
-                    <AppBarButton Label="Add" Icon="Add" Click="AddPost" />
-                    <AppBarButton Label="Delete" Icon="Delete" Click="RemovePost" />
+                    <CommandBar Background="Transparent" IsOpen="False">
+                        <AppBarButton Label="Add" Icon="Add" Click="AddPost" />
+                        <AppBarButton Label="Delete" Icon="Delete" Click="RemovePost" />
+                        <AppBarButton Label="Close" Icon="ClosePane" Click="ClosePane" />
+                    </CommandBar>
                 </StackPanel>
             </Grid>
         </SplitView.Pane>
@@ -103,15 +106,12 @@
                             <Rectangle Width="25" Height="14" Fill="Purple"/>
                         </ComboBoxItem>
                     </ComboBox>
+                    <AppBarToggleButton Name="OpenPaneButton" Icon="OpenPane" Label="Open Posts Panel" Click="OpenPane" Visibility="Collapsed"/>
                 </StackPanel>
 
                 <TextBox Grid.Row="1" TextChanged="Save_Click" x:Name="TextBoxTitle" HorizontalAlignment="Stretch" Visibility="Collapsed" Margin="0,10,0,10" />
                 <RichEditBox Grid.Row="2" TextChanged="Save_Click"  AcceptsReturn="True" TextWrapping="Wrap" VerticalAlignment="Stretch" FontFamily="Segoe UI" FontSize="16" Name="Display"/>
 
-                <!--<StackPanel x:Name="CommandStackPanel" Grid.Row="3" Orientation="Horizontal" Visibility="Collapsed">
-                    <AppBarButton Name="Save" Icon="Save" Label="Save" Click="Save_Click"/>
-                </StackPanel>-->
-                
             </Grid>
         </SplitView.Content>
     </SplitView>
