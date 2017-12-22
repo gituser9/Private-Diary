@@ -72,16 +72,16 @@ namespace PrivateDiary.Service
             }
         }
 
-        public void Update(string body, string title, int postId)
+        public async void Update(string body, string title, int postId)
         {
             using (var db = new DataContext())
             {
-                var post = db.Posts.Find(postId);
+                var post = await db.Posts.FindAsync(postId);
                 post.Body = Crypter.Encrypt(body);
                 post.Title = Crypter.Encrypt(title);
 
                 db.Entry(post).State = EntityState.Modified;
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
         }
 

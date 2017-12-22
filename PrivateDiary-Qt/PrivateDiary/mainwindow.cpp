@@ -17,8 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnRegistration, &QPushButton::clicked, this, &MainWindow::registration);
     connect(ui->btnAuth, &QPushButton::clicked, this, &MainWindow::auth);
 
-//    ui->stackedWidget->setCurrentIndex(Pages::Main);
-//    setupMainPage();
+    ui->stackedWidget->setCurrentIndex(Pages::Main);
+    setupMainPage();
 }
 
 MainWindow::~MainWindow()

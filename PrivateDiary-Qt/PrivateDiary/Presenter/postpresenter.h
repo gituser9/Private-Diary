@@ -7,6 +7,7 @@
 #include "Model/Service/postservice.h"
 #include "Model/DataStructure/post.h"
 #include "Model/DataStructure/appdata.h"
+#include "Util/crypter.h"
 
 
 class PostPresenter : public QObject
@@ -26,6 +27,7 @@ public:
 private:
     std::shared_ptr<AppData> appData;
     PostService postService;
+    Crypter crypter;
 
 signals:
     void showAlert(const QString &message);

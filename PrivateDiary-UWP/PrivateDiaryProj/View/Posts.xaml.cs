@@ -161,7 +161,7 @@ namespace PrivateDiary.View
             }
             if (string.IsNullOrEmpty(TextBoxTitle.Text))
             {
-                ContentDialog emptyTitle = new ContentDialog
+                var emptyTitle = new ContentDialog
                 {
                     Title = "Title is required",
                     Content = "Enter title for your post.",
@@ -186,19 +186,15 @@ namespace PrivateDiary.View
 
         private async void RemovePost(object sender, RoutedEventArgs e)
         {
-            object datacontext = (e.OriginalSource as FrameworkElement)?.DataContext;
-
-            if (datacontext == null)
-            {
-                return;
-            }
-            if (!(datacontext is Post post))
+            if (_currentPost == null)
             {
                 return;
             }
 
-            await _postService.Delete(post.Id);
-            PostList.Remove(post);
+            await _postService.Delete(_currentPost.Id);
+            PostList.Remove(_currentPost);
+
+            _currentPost = null;
         }
     }
 }

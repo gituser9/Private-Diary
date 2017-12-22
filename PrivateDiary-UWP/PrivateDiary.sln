@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateDiary", "PrivateDiary\PrivateDiary.csproj", "{92AEAFFA-4A47-453F-9651-5ECEB226C87C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateDiaryUnitTest", "PrivateDiaryUnitTest\PrivateDiaryUnitTest.csproj", "{6D46E968-C0E0-43A5-B6CA-498CB545BD68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrivateDiaryProj", "PrivateDiaryProj\PrivateDiaryProj.csproj", "{02B00733-0E36-416E-9AB5-8769747EFADA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,24 +17,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Debug|ARM.ActiveCfg = Debug|ARM
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Debug|ARM.Build.0 = Debug|ARM
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Debug|ARM.Deploy.0 = Debug|ARM
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Debug|x64.ActiveCfg = Debug|x64
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Debug|x64.Build.0 = Debug|x64
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Debug|x64.Deploy.0 = Debug|x64
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Debug|x86.ActiveCfg = Debug|x86
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Debug|x86.Build.0 = Debug|x86
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Debug|x86.Deploy.0 = Debug|x86
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Release|ARM.ActiveCfg = Release|ARM
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Release|ARM.Build.0 = Release|ARM
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Release|ARM.Deploy.0 = Release|ARM
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Release|x64.ActiveCfg = Release|x64
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Release|x64.Build.0 = Release|x64
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Release|x64.Deploy.0 = Release|x64
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Release|x86.ActiveCfg = Release|x86
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Release|x86.Build.0 = Release|x86
-		{92AEAFFA-4A47-453F-9651-5ECEB226C87C}.Release|x86.Deploy.0 = Release|x86
 		{6D46E968-C0E0-43A5-B6CA-498CB545BD68}.Debug|ARM.ActiveCfg = Debug|ARM
 		{6D46E968-C0E0-43A5-B6CA-498CB545BD68}.Debug|ARM.Build.0 = Debug|ARM
 		{6D46E968-C0E0-43A5-B6CA-498CB545BD68}.Debug|ARM.Deploy.0 = Debug|ARM
@@ -53,6 +35,24 @@ Global
 		{6D46E968-C0E0-43A5-B6CA-498CB545BD68}.Release|x86.ActiveCfg = Release|x86
 		{6D46E968-C0E0-43A5-B6CA-498CB545BD68}.Release|x86.Build.0 = Release|x86
 		{6D46E968-C0E0-43A5-B6CA-498CB545BD68}.Release|x86.Deploy.0 = Release|x86
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Debug|ARM.ActiveCfg = Debug|ARM
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Debug|ARM.Build.0 = Debug|ARM
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Debug|ARM.Deploy.0 = Debug|ARM
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Debug|x64.ActiveCfg = Debug|x64
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Debug|x64.Build.0 = Debug|x64
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Debug|x64.Deploy.0 = Debug|x64
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Debug|x86.ActiveCfg = Debug|x86
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Debug|x86.Build.0 = Debug|x86
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Debug|x86.Deploy.0 = Debug|x86
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Release|ARM.ActiveCfg = Release|ARM
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Release|ARM.Build.0 = Release|ARM
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Release|ARM.Deploy.0 = Release|ARM
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Release|x64.ActiveCfg = Release|x64
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Release|x64.Build.0 = Release|x64
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Release|x64.Deploy.0 = Release|x64
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Release|x86.ActiveCfg = Release|x86
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Release|x86.Build.0 = Release|x86
+		{02B00733-0E36-416E-9AB5-8769747EFADA}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

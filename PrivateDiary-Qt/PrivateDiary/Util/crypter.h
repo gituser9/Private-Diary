@@ -15,7 +15,7 @@ class Crypter
 public:
     Crypter();
 
-    QString encrypt(const QString &toEncrypt) const;
+    QString encrypt(const QString &toEncrypt);
     QString decrypt(const QString &cipherString) const;
 
     void setAppData(std::shared_ptr<AppData> appData);
