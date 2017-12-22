@@ -7,6 +7,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Navigation;
+using Autofac;
 using PrivateDiary.Model;
 using PrivateDiary.Service;
 
@@ -29,7 +31,13 @@ namespace PrivateDiary.View
         {
             this.InitializeComponent();
 
-            PostList = new ObservableCollection<Post>(_postService.GetAll()); 
+            
+        }
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            var posts = await _postService.GetAll();
+            PostList = new ObservableCollection<Post>(posts);
         }
 
         private async void ShowPost(object sender, SelectionChangedEventArgs e)
@@ -214,15 +222,50 @@ namespace PrivateDiary.View
 
         private async void TitleList_OnDragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
-            var post = args.Items.First() as Post;
-
-            if (post == null)
+            if (!(args.Items.First() is Post post))
             {
                 return;
             }
 
             var index = PostList.IndexOf(post);
             await _postService.UpdatePosition(post.Id, index);
+        }
+
+        private async void ShowEditProfile(object sender, RoutedEventArgs e)
+        {
+            PrepareProfileDialog();
+            var answer = await ProfileDialog.ShowAsync();
+
+            if (answer != ContentDialogResult.Primary)
+            {
+                return;
+            }
+            using (var scope = IoC.Container.BeginLifetimeScope())
+            {
+                SplitView.Visibility = Visibility.Collapsed;
+                ProgressRing.Visibility = Visibility.Visible;
+                var userService = scope.Resolve<IUserService>();
+                var user = await userService.Update(TextBoxLogin.Text, Constant.Key, TextBoxPassword.Password, Constant.User);
+                SplitView.Visibility = Visibility.Visible;
+                ProgressRing.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void TextBoxConfirmPassword_OnPasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (TextBoxPassword.Password.Length == 0)
+            {
+                return;
+            }
+            ProfileDialog.IsPrimaryButtonEnabled = TextBoxPassword.Password == TextBoxConfirmPassword.Password;
+        }
+
+        private void PrepareProfileDialog()
+        {
+            ProfileDialog.IsPrimaryButtonEnabled = false;
+            TextBoxPassword.Password = string.Empty;
+            TextBoxConfirmPassword.Password = string.Empty;
+            TextBoxLogin.Text = string.Empty;
         }
     }
 }

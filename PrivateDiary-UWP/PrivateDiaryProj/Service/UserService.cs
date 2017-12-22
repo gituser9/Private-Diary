@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,9 @@ namespace PrivateDiary.Service
 {
     public interface IUserService
     {
-        bool Registration(string login, string password);
+        Task<bool> Registration(string login, string password);
         Task<User> Auth(string login, string password);
+        Task<User> Update(string login, string oldPassword, string newPassword, User userData);
     }
 
 
@@ -23,13 +25,13 @@ namespace PrivateDiary.Service
             _dataContext = dataContext;
         }
 
-        public bool Registration(string login, string password)
+        public async Task<bool> Registration(string login, string password)
         {
             try
             {
                 using (var db = new DataContext())
                 {
-                    bool isExist = db.Users.Any(user => user.Login == login);
+                    bool isExist = await db.Users.AnyAsync(user => user.Login == login);
 
                     if (isExist)
                     {
@@ -41,7 +43,7 @@ namespace PrivateDiary.Service
                         Login = login,
                         Password = HashPassword(password)
                     });
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                 }
                 return true;
             }
@@ -53,16 +55,57 @@ namespace PrivateDiary.Service
 
         public async Task<User> Auth(string login, string password)
         {
-            /*using (var db = new DataContext())
-            {*/
-                string passwordHash = HashPassword(password);
+            string passwordHash = HashPassword(password);
 
-              //  return await db.Users.FirstOrDefaultAsync(user =>
-                return await _dataContext.Users.FirstOrDefaultAsync(user =>
-                        user.Login == login
-                        && user.Password == passwordHash
-                    );
-            //}
+            
+            return await _dataContext.Users.FirstOrDefaultAsync(user =>
+                    user.Login == login
+                    && user.Password == passwordHash
+                );   
+        }
+
+        public async Task<User> Update(string login, string oldPassword, string newPassword, User userData)
+        {
+            string oldPasswordHash = HashPassword(oldPassword);
+            User user = await _dataContext.Users.FirstOrDefaultAsync(entity =>
+                entity.Login == userData.Login
+                && entity.Password == oldPasswordHash
+            );
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            user.Login = login;
+
+            if (newPassword == oldPassword)
+            {
+                await _dataContext.SaveChangesAsync();
+                return user;
+            }
+
+            user.Password = HashPassword(newPassword);
+            IEnumerable<Post> posts = await _dataContext.Posts.ToArrayAsync();
+
+            foreach (Post post in posts)
+            {
+                // decrypt all posts
+                post.Title = Crypter.Decrypt(post.Title);
+                post.Body = Crypter.Decrypt(post.Body);
+            }
+            Constant.Key = newPassword;
+            Constant.User = user;
+            foreach (Post post in posts)
+            {
+                // encrypt all posts
+                post.Title = Crypter.Encrypt(post.Title);
+                post.Body = Crypter.Encrypt(post.Body);
+            }
+
+            await _dataContext.SaveChangesAsync();
+
+            return user;
         }
 
 

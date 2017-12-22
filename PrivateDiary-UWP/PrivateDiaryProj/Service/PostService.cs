@@ -9,6 +9,8 @@ namespace PrivateDiary.Service
 {
     public class PostService
     {
+        //private readonly IDataContext _dataContext;
+
         public Post AddPost(string title, string body)
         {
             try
@@ -38,11 +40,11 @@ namespace PrivateDiary.Service
             }
         }
 
-        public IEnumerable<Post> GetAll()
+        public async Task<IEnumerable<Post>> GetAll()
         {
             using (var db = new DataContext())
             {
-                var encryptedPosts = db.Posts.Where(post => post.UserId == Constant.User.Id).OrderBy(entity => entity.Order).ToArray();
+                var encryptedPosts = await db.Posts.Where(post => post.UserId == Constant.User.Id).OrderBy(entity => entity.Order).ToArrayAsync();
                 var decryptedPosts = new List<Post>(encryptedPosts.Length);
 
                 foreach (Post encryptedPost in encryptedPosts)
