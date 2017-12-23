@@ -14,8 +14,6 @@ TEMPLATE = app
 
 CONFIG += c++11
 
-LIBS +=  -lcryptopp
-
 
 DEFINES += QT_DEPRECATED_WARNINGS
 

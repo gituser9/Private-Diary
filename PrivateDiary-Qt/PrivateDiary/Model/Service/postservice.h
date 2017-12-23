@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <QtSql>
-#include <QDir>
 #include <QDateTime>
 #include <QVector>
 
@@ -19,14 +18,17 @@ public:
     ~PostService();
 
     bool createPost(const QString &title, const QString &text, const int userId);
-    bool updatePost(const QString &title, const QString &text, const int id);
+    bool updatePost(const QByteArray &title, const QByteArray &text, const int id);
     bool deletePost(const int id);
 
     QVector<Post> getPosts(const int userId);
     Post get(const int id);
 
+    void setCrypter(const Crypter &crypter);
+
 private:
     QSqlDatabase db;
+    Crypter crypter;
 
 
 };

@@ -2,11 +2,13 @@
 #define CONSTANT_H
 
 #include <QString>
+#include <QDir>
 
 
 namespace Constant {
     const QString defaultTitle = "New Post";
     const QString dbName = "PrivateDiary.dbx";
+    const QString dbPath = QDir::homePath() + "/" + dbName;
 
     namespace UserFields {
         const QString login = "login";

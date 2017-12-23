@@ -4,7 +4,7 @@
 PostService::PostService()
 {
     db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(QDir::homePath() + "/" + Constant::dbName);
+    db.setDatabaseName(Constant::dbPath);
 
     if (!db.open()) {
         throw "DB error";
@@ -25,14 +25,14 @@ bool PostService::createPost(const QString &title, const QString &text, const in
     QSqlQuery query;
     query.prepare("insert into posts(userId, title, body, date) values(:userId, :title, :body, :date)");
     query.bindValue(":userId", userId);
-    query.bindValue(":title", title);
+    query.bindValue(":title", crypter.encrypt(title));
     query.bindValue(":body", text);
     query.bindValue(":date", QDateTime::currentDateTime().toSecsSinceEpoch());
 
     return query.exec();
 }
 
-bool PostService::updatePost(const QString &title, const QString &text, const int id)
+bool PostService::updatePost(const QByteArray &title, const QByteArray &text, const int id)
 {
     if (!db.isOpen()) {
         return false;
@@ -77,7 +77,7 @@ QVector<Post> PostService::getPosts(const int userId)
     }
     while (query.next()) {
         Post post;
-        post.title = query.value("title").toString();
+        post.title = crypter.decrypt(query.value("title").toByteArray());
         post.date = query.value("date").toLongLong();
         post.id = query.value("id").toInt();
         result.append(post);
@@ -98,8 +98,14 @@ Post PostService::get(const int id)
     }
 
     query.next();
-    post.title = query.value("title").toString();
-    post.body = query.value("body").toString();
+    post.title = crypter.decrypt(query.value("title").toByteArray());
+    post.body = crypter.decrypt(query.value("body").toByteArray());
 
     return post;
+}
+
+void PostService::setCrypter(const Crypter &crypter)
+{
+    // TODO: must be on presenter only
+    this->crypter = crypter;
 }

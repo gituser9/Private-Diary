@@ -1,44 +1,41 @@
 #include "crypter.h"
-#include <QtDebug>
+
 
 Crypter::Crypter()
 {
-
+    aesCrypter = new QAESEncryption(QAESEncryption::AES_128, QAESEncryption::ECB);
 }
 
-QString Crypter::encrypt(const QString &toEncrypt) const
+Crypter::~Crypter()
+{
+    delete aesCrypter;
+}
+
+QByteArray Crypter::encrypt(const QString &toEncrypt) const
 {
     if (toEncrypt.isNull() || toEncrypt.isEmpty()) {
         return "";
     }
-    QAESEncryption encryption(QAESEncryption::AES_256, QAESEncryption::ECB);
-    QByteArray key = QCryptographicHash::hash(appData->getUserPassword().toUtf8(), QCryptographicHash::Sha256);
 
-//    return QString(encryption.encode(bytes, key));
-    return QString::fromUtf8(encryption.encode(toEncrypt.toUtf8(), key));
+
+    return aesCrypter->encode(toEncrypt.toUtf8(), passwordHash);
 }
 
-QString Crypter::decrypt(const QString &cipherString) const
+QString Crypter::decrypt(const QByteArray &cipherString) const
 {
     if (cipherString.isNull() || cipherString.isEmpty()) {
         return "";
     }
-    QAESEncryption encryption(QAESEncryption::AES_256, QAESEncryption::ECB);
-    QByteArray key = QCryptographicHash::hash(appData->getUserPassword().toUtf8(), QCryptographicHash::Sha256);
-    auto result = encryption.decode(cipherString.toUtf8(), key);
 
-    qDebug() << cipherString;
-    qDebug() << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++";
-    qDebug() << result;
-    qDebug() << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++";
-    qDebug() << QString::fromUtf8(result);
+    auto dec = aesCrypter->decode(cipherString, passwordHash);
 
-    return QString(result);
-
+    return QString::fromUtf8(dec.data());
 }
 
 void Crypter::setAppData(std::shared_ptr<AppData> appData)
 {
     this->appData = appData;
+
+    passwordHash = QCryptographicHash::hash(appData->getUserPassword().toUtf8(), QCryptographicHash::Md5);
 }
 

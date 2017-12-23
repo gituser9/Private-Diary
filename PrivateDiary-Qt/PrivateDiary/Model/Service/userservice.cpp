@@ -73,7 +73,7 @@ void UserService::setAppData(std::shared_ptr<AppData> appData)
 QSqlDatabase UserService::getDb()
 {
     auto db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(QDir::homePath() + "/" + Constant::dbName);
+    db.setDatabaseName(Constant::dbPath);
 
     if (!db.open()) {
         throw "DB error";

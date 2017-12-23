@@ -4,7 +4,6 @@
 #include <QString>
 #include <QtSql>
 #include <QCryptographicHash>
-#include <QDir>
 
 #include "Model/DataStructure/constant.h"
 #include "Model/DataStructure/appdata.h"

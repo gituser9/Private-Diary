@@ -25,7 +25,9 @@ bool PostPresenter::updatePost(const QString &title, const QString &text, const 
         emit showAlert(tr("Title is required"));
         return false;
     }
-    return postService.updatePost(title, text, id);
+    QByteArray encryptedText = crypter.encrypt(text);
+    QByteArray encryptedTitle = crypter.encrypt(title);
+    return postService.updatePost(encryptedTitle, encryptedText, id);
 }
 
 bool PostPresenter::deletePost(const int id)
@@ -41,7 +43,11 @@ Post PostPresenter::getPost(const int id)
     if (id <= 0) {
         return Post();
     }
-    return postService.get(id);
+
+    // TODO: decryption must be here
+    Post post = postService.get(id);
+
+    return post;
 }
 
 QVector<Post> PostPresenter::getAll()
@@ -52,4 +58,6 @@ QVector<Post> PostPresenter::getAll()
 void PostPresenter::setAppData(std::shared_ptr<AppData> appData)
 {
     this->appData = appData;
+    crypter.setAppData(appData);
+    postService.setCrypter(crypter);
 }

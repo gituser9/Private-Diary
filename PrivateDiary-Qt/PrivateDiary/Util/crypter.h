@@ -14,18 +14,17 @@ class Crypter
 {
 public:
     Crypter();
+    ~Crypter();
 
-    QString encrypt(const QString &toEncrypt) const;
-    QString decrypt(const QString &cipherString) const;
+    QByteArray encrypt(const QString &toEncrypt) const;
+    QString decrypt(const QByteArray &cipherString) const;
 
     void setAppData(std::shared_ptr<AppData> appData);
 
 private:
     std::shared_ptr<AppData> appData;
-
-    int getAlignedSize(int currSize, int alignment);
-
-
+    QByteArray passwordHash;
+    QAESEncryption *aesCrypter;
 
 };
 
