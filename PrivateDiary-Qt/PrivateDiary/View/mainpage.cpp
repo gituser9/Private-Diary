@@ -35,27 +35,20 @@ void MainPage::setupPage(std::shared_ptr<AppData> appData)
     this->appData = appData;
     postPresenter->setAppData(appData);
 
-
     setupToolbar();
     setupTextActions();
 
     ui->btnAddPost->setIcon(QIcon(":/Images/add.png"));
     ui->btnAddPost->setIconSize(QSize(30, 30));
 
-
     ui->leTitle->hide();
     ui->textEdit->hide();
     ui->splitter->setStretchFactor(1,1);
 
-    ui->lvTitleList->setModel(postModel);
     postModel->resetData(postPresenter->getAll());
 
-    /*QVector<Post> posts;
-    Post post;
-    post.title = "DDDDD";
-    post.date = QDateTime::currentDateTime().toSecsSinceEpoch();
-    posts.append(post);
-    postModel->resetData(posts);*/
+    ui->lvTitleList->setModel(postModel);
+    ui->lvTitleList->setDragDropMode(QAbstractItemView::InternalMove);
 
 }
 
@@ -166,11 +159,6 @@ void MainPage::updatePost()
 void MainPage::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
 {
     QTextCursor cursor = ui->textEdit->textCursor();
-
-    /*if (!cursor.hasSelection()) {
-        cursor.select(QTextCursor::WordUnderCursor);
-    }*/
-
     cursor.mergeCharFormat(format);
     ui->textEdit->mergeCurrentCharFormat(format);
 }
@@ -193,8 +181,6 @@ void MainPage::alignmentChanged(Qt::Alignment a)
 
 void MainPage::fontChanged(const QFont &f)
 {
-//    comboFont->setCurrentIndex(comboFont->findText(QFontInfo(f).family()));
-//    comboSize->setCurrentIndex(comboSize->findText(QString::number(f.pointSize())));
     ui->actionBold->setChecked(f.bold());
     ui->actionItalic->setChecked(f.italic());
     ui->actionUnderline->setChecked(f.underline());
@@ -204,5 +190,4 @@ void MainPage::colorChanged(const QColor &c)
 {
     QPixmap pix(16, 16);
     pix.fill(c);
-//    actionTextColor->setIcon(pix);
 }

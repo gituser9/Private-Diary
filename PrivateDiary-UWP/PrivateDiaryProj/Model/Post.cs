@@ -27,6 +27,8 @@ namespace PrivateDiary.Model
 
         public long Date { get; set; }
 
+        public int Order { get; set; }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

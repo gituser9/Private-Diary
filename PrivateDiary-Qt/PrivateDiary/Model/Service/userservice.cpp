@@ -112,6 +112,7 @@ void UserService::initDatabase()
                 "date bigint NOT NULL,"
                 "title text NOT NULL,"
                 "body text NULL,"
+                "post_order integer NOT NULL,"
                 "table_constraint"
            ");"
     );

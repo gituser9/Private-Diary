@@ -9,6 +9,8 @@
 #include <QWidget>
 #include <QModelIndex>
 #include <QIcon>
+#include <QStringList>
+#include <QModelIndexList>
 
 #include "ui_mainwindow.h"
 
@@ -59,6 +61,7 @@ private slots:
     void feedClicked(const QModelIndex &index);
     void addPost();
     void updatePost();
+
 };
 
 #endif // MAINPAGE_H

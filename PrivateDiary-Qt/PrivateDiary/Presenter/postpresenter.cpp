@@ -61,3 +61,13 @@ void PostPresenter::setAppData(std::shared_ptr<AppData> appData)
     crypter.setAppData(appData);
     postService.setCrypter(crypter);
 }
+
+void PostPresenter::updatePostPosition(const int postId, const int position)
+{
+    if (postId <= 0 || position < 0) {
+        return;
+    }
+    if (!postService.updatePostPosition(postId, position)) {
+        emit showAlert(tr("Reorder error"));
+    }
+}

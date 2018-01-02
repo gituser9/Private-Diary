@@ -20,8 +20,8 @@ public:
     bool createPost(const QString &title, const QString &text);
     bool updatePost(const QString &title, const QString &text, const int id);
     bool deletePost(const int id);
-    Post getPost(const int id);
     QVector<Post> getAll();
+    Post getPost(const int id);
     void setAppData(std::shared_ptr<AppData> appData);
 
 private:
@@ -31,6 +31,9 @@ private:
 
 signals:
     void showAlert(const QString &message);
+
+public slots:
+    void updatePostPosition(const int postId, const int position);
 
 };
 
