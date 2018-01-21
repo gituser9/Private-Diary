@@ -15,13 +15,6 @@ namespace Constant {
         const QString password = "password";
         const QString id = "id";
     };
-
-    namespace PostFields {
-        const QString date = "date";
-        const QString title = "title";
-        const QString body = "body";
-        const QString id = "id";
-    }
 }
 
 

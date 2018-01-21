@@ -19,7 +19,6 @@ public:
 
     bool createPost(const QString &title, const QString &text, const int userId);
     bool updatePost(const QByteArray &title, const QByteArray &text, const int id);
-    bool updatePostPosition(const int postId, const int position);
     bool deletePost(const int id);
 
     QVector<Post> getPosts(const int userId);

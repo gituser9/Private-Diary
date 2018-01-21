@@ -101,20 +101,12 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="IoC.cs" />
-    <Compile Include="View\MainPage.xaml.cs">
+    <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Migrations\20171111162847_PostsTable.cs" />
     <Compile Include="Migrations\20171111162847_PostsTable.designer.cs">
       <DependentUpon>20171111162847_PostsTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20171222195142_AddOrderToPostsTable.cs" />
-    <Compile Include="Migrations\20171222195142_AddOrderToPostsTable.designer.cs">
-      <DependentUpon>20171222195142_AddOrderToPostsTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20171222195840_SetOrderInPostsTable.cs" />
-    <Compile Include="Migrations\20171222195840_SetOrderInPostsTable.designer.cs">
-      <DependentUpon>20171222195840_SetOrderInPostsTable.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Constant.cs" />
     <Compile Include="Model\Post.cs" />
@@ -199,7 +191,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="View\MainPage.xaml">
+    <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

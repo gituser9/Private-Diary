@@ -10,7 +10,6 @@ class Post
 public:
     int id;
     int userId;
-    int order;
     long date;
     QString title;
     QString body;

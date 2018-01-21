@@ -127,20 +127,10 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="QWidget" name="layoutWidget">
+          <widget class="QWidget" name="">
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <widget class="QListView" name="lvTitleList">
-              <property name="dragEnabled">
-               <bool>false</bool>
-              </property>
-              <property name="dragDropMode">
-               <enum>QAbstractItemView::NoDragDrop</enum>
-              </property>
-              <property name="defaultDropAction">
-               <enum>Qt::CopyAction</enum>
-              </property>
-             </widget>
+             <widget class="QListView" name="lvTitleList"/>
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_2">

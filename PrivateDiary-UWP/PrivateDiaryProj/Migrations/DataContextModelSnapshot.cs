@@ -1,8 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using PrivateDiary.Service;
 
 namespace PrivateDiary.Migrations
@@ -22,9 +20,7 @@ namespace PrivateDiary.Migrations
 
                     b.Property<string>("Body");
 
-                    b.Property<long>("Date");
-
-                    b.Property<int>("Order");
+                    b.Property<DateTime>("Date");
 
                     b.Property<string>("Title");
 

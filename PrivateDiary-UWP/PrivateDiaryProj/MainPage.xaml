@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="PrivateDiary.View.MainPage"
+    x:Class="PrivateDiary.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PrivateDiary"
@@ -17,6 +17,6 @@
                 <Button Margin="5,10,0,0" Content="Authorization" Click="Auth" Width="120" />
             </StackPanel>
         </StackPanel>
-        <ProgressRing Width="60" Height="60" x:Name="ProgressRing" Visibility="Collapsed" IsActive="True" HorizontalAlignment="Center" />
+        <ProgressRing Width="60" Height="60" x:Name="ProgressRing" Visibility="Collapsed" IsActive="True" HorizontalAlignment="Center"></ProgressRing>
     </Grid>
 </Page>

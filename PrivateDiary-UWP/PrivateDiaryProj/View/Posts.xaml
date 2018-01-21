@@ -13,15 +13,15 @@
         <converter:DateFormatConverter x:Name="DateToStringFormatConverter"/>
     </Page.Resources>
 
-    <SplitView Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" IsPaneOpen="True" DisplayMode="Inline" x:Name="SplitView">
+    <SplitView Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" IsPaneOpen="True" DisplayMode="Inline">
         <SplitView.Pane>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ListView Grid.Row="0" AllowDrop="True" CanReorderItems="True" CanDragItems="True" DragItemsCompleted="TitleList_OnDragItemsCompleted" x:Name="TitleList" SelectionMode="Single" ItemsSource="{x:Bind PostList}" SelectionChanged="ShowPost">
-                    <ListView.ItemTemplate>
+                <ListBox Grid.Row="0" x:Name="TitleList" SelectionMode="Single" ItemsSource="{x:Bind PostList}" SelectionChanged="ShowPost">
+                    <ListBox.ItemTemplate>
                         <DataTemplate x:DataType="model:Post">
                             <Grid RightTapped="Grid_RightTapped">
                                 <FlyoutBase.AttachedFlyout>
@@ -35,20 +35,11 @@
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
                 <StackPanel Grid.Row="1" Orientation="Horizontal">
-                    <CommandBar Background="Transparent" IsOpen="False">
-                        <AppBarButton Label="Add" Icon="Add" Click="AddPost" />
-                        <AppBarButton Label="Delete" Icon="Delete" Click="RemovePost" />
-                        <AppBarButton Label="Close" Icon="ClosePane" Click="ClosePane" Visibility="Collapsed" x:Name="ClosePaneButton" />
-                        
-                        <CommandBar.SecondaryCommands>
-                            <AppBarButton Label="Edit Profile" Icon="ContactInfo" Click="ShowEditProfile" />
-                        </CommandBar.SecondaryCommands>
-                    </CommandBar>
-                    
+                    <AppBarButton Label="Add" Icon="Add" Click="AddPost" />
                 </StackPanel>
             </Grid>
         </SplitView.Pane>
@@ -111,31 +102,16 @@
                             <Rectangle Width="25" Height="14" Fill="Purple"/>
                         </ComboBoxItem>
                     </ComboBox>
-                    <AppBarButton Name="OpenPaneButton" Icon="OpenPane" Label="Open Posts Panel" Click="OpenPane" Visibility="Collapsed"/>
                 </StackPanel>
 
                 <TextBox Grid.Row="1" TextChanged="Save_Click" x:Name="TextBoxTitle" HorizontalAlignment="Stretch" Visibility="Collapsed" Margin="0,10,0,10" />
                 <RichEditBox Grid.Row="2" TextChanged="Save_Click"  AcceptsReturn="True" TextWrapping="Wrap" VerticalAlignment="Stretch" FontFamily="Segoe UI" FontSize="16" Name="Display"/>
 
-                <ContentDialog
-                    x:Name="ProfileDialog"
-                    Title="Edit Profile"
-                    PrimaryButtonText="Save"
-                    SecondaryButtonText="Cancel">
-
-                    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical">
-                        <TextBox PlaceholderText="Login" x:Name="TextBoxLogin" Margin="0,5"/>
-                        <PasswordBox PlaceholderText="Password" x:Name="TextBoxPassword" Margin="0,5"/>
-                        <PasswordBox PlaceholderText="Confirm Password" x:Name="TextBoxConfirmPassword" Margin="0,5" PasswordChanged="TextBoxConfirmPassword_OnPasswordChanged" />
-                    </StackPanel>
-
-                </ContentDialog>
-                <ProgressRing Width="60" Height="60" x:Name="ProgressRing" Visibility="Collapsed" IsActive="True" HorizontalAlignment="Center" />
+                <!--<StackPanel x:Name="CommandStackPanel" Grid.Row="3" Orientation="Horizontal" Visibility="Collapsed">
+                    <AppBarButton Name="Save" Icon="Save" Label="Save" Click="Save_Click"/>
+                </StackPanel>-->
+                
             </Grid>
         </SplitView.Content>
-
-        
     </SplitView>
-
-    
 </Page>

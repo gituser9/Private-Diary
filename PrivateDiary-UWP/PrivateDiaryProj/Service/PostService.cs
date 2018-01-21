@@ -9,8 +9,6 @@ namespace PrivateDiary.Service
 {
     public class PostService
     {
-        //private readonly IDataContext _dataContext;
-
         public Post AddPost(string title, string body)
         {
             try
@@ -25,11 +23,7 @@ namespace PrivateDiary.Service
                 using (var db = new DataContext())
                 {
                     db.Posts.AddAsync(post);
-                    db.SaveChangesAsync();
-
-                    post.Order = post.Id;
-                    db.Entry(post).State = EntityState.Modified;
-                    db.SaveChangesAsync();
+                    db.SaveChanges();
                 }
                 post.Title = Crypter.Decrypt(post.Title);
                 return post;
@@ -40,11 +34,11 @@ namespace PrivateDiary.Service
             }
         }
 
-        public async Task<IEnumerable<Post>> GetAll()
+        public IEnumerable<Post> GetAll()
         {
             using (var db = new DataContext())
             {
-                var encryptedPosts = await db.Posts.Where(post => post.UserId == Constant.User.Id).OrderBy(entity => entity.Order).ToArrayAsync();
+                var encryptedPosts = db.Posts.Where(post => post.UserId == Constant.User.Id).ToArray();
                 var decryptedPosts = new List<Post>(encryptedPosts.Length);
 
                 foreach (Post encryptedPost in encryptedPosts)
@@ -78,16 +72,16 @@ namespace PrivateDiary.Service
             }
         }
 
-        public async void Update(string body, string title, int postId)
+        public void Update(string body, string title, int postId)
         {
             using (var db = new DataContext())
             {
-                var post = await db.Posts.FindAsync(postId);
+                var post = db.Posts.Find(postId);
                 post.Body = Crypter.Encrypt(body);
                 post.Title = Crypter.Encrypt(title);
 
                 db.Entry(post).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                db.SaveChanges();
             }
         }
 
@@ -97,18 +91,6 @@ namespace PrivateDiary.Service
             {
                 var post = db.Posts.Find(postId);
                 db.Remove(post);
-                await db.SaveChangesAsync();
-            }
-        }
-
-        public async Task UpdatePosition(int postId, int position)
-        {
-            using (var db = new DataContext())
-            {
-                var post = db.Posts.Find(postId);
-                post.Order = position;
-
-                db.Entry(post).State = EntityState.Modified;
                 await db.SaveChangesAsync();
             }
         }

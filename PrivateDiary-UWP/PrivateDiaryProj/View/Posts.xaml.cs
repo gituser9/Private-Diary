@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Navigation;
-using Autofac;
 using PrivateDiary.Model;
 using PrivateDiary.Service;
 
@@ -31,13 +28,7 @@ namespace PrivateDiary.View
         {
             this.InitializeComponent();
 
-            
-        }
-
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
-        {
-            var posts = await _postService.GetAll();
-            PostList = new ObservableCollection<Post>(posts);
+            PostList = new ObservableCollection<Post>(_postService.GetAll()); 
         }
 
         private async void ShowPost(object sender, SelectionChangedEventArgs e)
@@ -64,8 +55,6 @@ namespace PrivateDiary.View
                 TextBoxTitle.Focus(FocusState.Programmatic);
                 TextBoxTitle.SelectAll();
             }
-
-            ClosePaneButton.Visibility = Visibility;
         }
 
         private void AddPost(object sender, RoutedEventArgs e)
@@ -172,7 +161,7 @@ namespace PrivateDiary.View
             }
             if (string.IsNullOrEmpty(TextBoxTitle.Text))
             {
-                var emptyTitle = new ContentDialog
+                ContentDialog emptyTitle = new ContentDialog
                 {
                     Title = "Title is required",
                     Content = "Enter title for your post.",
@@ -197,75 +186,19 @@ namespace PrivateDiary.View
 
         private async void RemovePost(object sender, RoutedEventArgs e)
         {
-            if (_currentPost == null)
+            object datacontext = (e.OriginalSource as FrameworkElement)?.DataContext;
+
+            if (datacontext == null)
+            {
+                return;
+            }
+            if (!(datacontext is Post post))
             {
                 return;
             }
 
-            await _postService.Delete(_currentPost.Id);
-            PostList.Remove(_currentPost);
-
-            _currentPost = null;
-        }
-
-        private void ClosePane(object sender, RoutedEventArgs e)
-        {
-            SplitView.IsPaneOpen = false;
-            OpenPaneButton.Visibility = Visibility.Visible;
-        }
-
-        private void OpenPane(object sender, RoutedEventArgs e)
-        {
-            SplitView.IsPaneOpen = true;
-            OpenPaneButton.Visibility = Visibility.Collapsed;
-        }
-
-        private async void TitleList_OnDragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
-        {
-            if (!(args.Items.First() is Post post))
-            {
-                return;
-            }
-
-            var index = PostList.IndexOf(post);
-            await _postService.UpdatePosition(post.Id, index);
-        }
-
-        private async void ShowEditProfile(object sender, RoutedEventArgs e)
-        {
-            PrepareProfileDialog();
-            var answer = await ProfileDialog.ShowAsync();
-
-            if (answer != ContentDialogResult.Primary)
-            {
-                return;
-            }
-            using (var scope = IoC.Container.BeginLifetimeScope())
-            {
-                SplitView.Visibility = Visibility.Collapsed;
-                ProgressRing.Visibility = Visibility.Visible;
-                var userService = scope.Resolve<IUserService>();
-                var user = await userService.Update(TextBoxLogin.Text, Constant.Key, TextBoxPassword.Password, Constant.User);
-                SplitView.Visibility = Visibility.Visible;
-                ProgressRing.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private void TextBoxConfirmPassword_OnPasswordChanged(object sender, RoutedEventArgs e)
-        {
-            if (TextBoxPassword.Password.Length == 0)
-            {
-                return;
-            }
-            ProfileDialog.IsPrimaryButtonEnabled = TextBoxPassword.Password == TextBoxConfirmPassword.Password;
-        }
-
-        private void PrepareProfileDialog()
-        {
-            ProfileDialog.IsPrimaryButtonEnabled = false;
-            TextBoxPassword.Password = string.Empty;
-            TextBoxConfirmPassword.Password = string.Empty;
-            TextBoxLogin.Text = string.Empty;
+            await _postService.Delete(post.Id);
+            PostList.Remove(post);
         }
     }
 }
