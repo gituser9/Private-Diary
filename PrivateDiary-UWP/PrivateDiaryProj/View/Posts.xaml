@@ -46,6 +46,8 @@
                         
                         <CommandBar.SecondaryCommands>
                             <AppBarButton Label="Edit Profile" Icon="ContactInfo" Click="ShowEditProfile" />
+                            <AppBarButton Label="Download Database" Icon="Download" Click="DownloadDatabase" />
+                            <AppBarButton Label="Upload Database" Icon="Upload" Click="UploadDatabase" />
                         </CommandBar.SecondaryCommands>
                     </CommandBar>
                     

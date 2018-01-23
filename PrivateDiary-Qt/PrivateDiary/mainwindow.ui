@@ -17,6 +17,9 @@
    <layout class="QGridLayout" name="gridLayout_3">
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <widget class="QWidget" name="page">
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
@@ -84,6 +87,12 @@
                 <property name="text">
                  <string>Authorization</string>
                 </property>
+                <property name="autoDefault">
+                 <bool>true</bool>
+                </property>
+                <property name="default">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
              </layout>
@@ -146,6 +155,19 @@
              <layout class="QHBoxLayout" name="horizontalLayout_2">
               <item>
                <widget class="QPushButton" name="btnAddPost">
+                <property name="toolTip">
+                 <string>Add New Post</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnDeletePost">
+                <property name="toolTip">
+                 <string>Delete Post</string>
+                </property>
                 <property name="text">
                  <string/>
                 </property>
@@ -192,9 +214,20 @@
      <x>0</x>
      <y>0</y>
      <width>874</width>
-     <height>22</height>
+     <height>30</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFIle">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionSettings"/>
+    <addaction name="actionDownload_Database"/>
+    <addaction name="actionUpload_Database"/>
+    <addaction name="separator"/>
+    <addaction name="actionLogout"/>
+   </widget>
+   <addaction name="menuFIle"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -282,6 +315,26 @@
    </property>
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>&amp;Settings</string>
+   </property>
+  </action>
+  <action name="actionDownload_Database">
+   <property name="text">
+    <string>&amp;Download Database</string>
+   </property>
+  </action>
+  <action name="actionUpload_Database">
+   <property name="text">
+    <string>&amp;Upload Database</string>
+   </property>
+  </action>
+  <action name="actionLogout">
+   <property name="text">
+    <string>&amp;Logout</string>
    </property>
   </action>
  </widget>

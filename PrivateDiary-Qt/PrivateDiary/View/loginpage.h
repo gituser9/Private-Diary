@@ -20,6 +20,7 @@ public:
     //void showAlert(const QString &message) const;
     bool registration(const QString &login, const QString &password) const;
     bool auth(const QString &login, const QString &password) const;
+    bool updateCredentioals(const QString &login, const QString &password) const;
 
     void setAppData(std::shared_ptr<AppData> appData);
 

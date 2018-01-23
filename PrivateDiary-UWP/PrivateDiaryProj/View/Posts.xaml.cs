@@ -11,6 +11,8 @@ using Windows.UI.Xaml.Navigation;
 using Autofac;
 using PrivateDiary.Model;
 using PrivateDiary.Service;
+using System.IO;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -30,8 +32,6 @@ namespace PrivateDiary.View
         public Posts()
         {
             this.InitializeComponent();
-
-            
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -266,6 +266,59 @@ namespace PrivateDiary.View
             TextBoxPassword.Password = string.Empty;
             TextBoxConfirmPassword.Password = string.Empty;
             TextBoxLogin.Text = string.Empty;
+        }
+
+        private async void DownloadDatabase(object sender, RoutedEventArgs e)
+        {
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker
+            {
+                SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop
+            };
+            folderPicker.FileTypeFilter.Add("*");
+
+            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+
+            if (folder == null)
+            {
+                return;
+            }
+
+            Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+            string dbFilePath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, Constant.DbName);
+
+
+            await Task.Run(() => { File.Copy(dbFilePath, Path.Combine(folder.Path, Constant.DbName)); });
+        }
+
+        private async void UploadDatabase(object sender, RoutedEventArgs e)
+        {
+            var picker = new Windows.Storage.Pickers.FileOpenPicker
+            {
+                ViewMode = Windows.Storage.Pickers.PickerViewMode.List,
+                SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.ComputerFolder
+            };
+            picker.FileTypeFilter.Add(".dbx");
+            Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
+
+            if (file == null)
+            {
+                return;
+            }
+
+            string localFolderPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+            await Task.Run(() =>
+            {
+                File.Copy(file.Path, Path.Combine(localFolderPath, Constant.DbName), true);
+            });
+            var emptyTitle = new ContentDialog
+            {
+                Title = "Restart Application",
+                Content = "Please restart application for use new database.",
+                CloseButtonText = "Ok"
+            };
+            await emptyTitle.ShowAsync();
+
+
         }
     }
 }

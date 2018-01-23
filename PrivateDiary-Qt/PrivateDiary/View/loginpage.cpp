@@ -21,7 +21,7 @@ void LoginPage::showAlert(const QString &message)
 bool LoginPage::registration(const QString &login, const QString &password) const
 {
     if (!userPresenter->registration(login, password)) {
-        //showAlert("Registration error");
+//        emit this->showAlert("Registration error");
         return false;
     }
     return true;
@@ -34,6 +34,11 @@ bool LoginPage::auth(const QString &login, const QString &password) const
         return false;
     }
     return true;
+}
+
+bool LoginPage::updateCredentioals(const QString &login, const QString &password) const
+{
+    return userPresenter->update(login, password);
 }
 
 void LoginPage::setAppData(std::shared_ptr<AppData> appData)

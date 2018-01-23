@@ -12,7 +12,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = PrivateDiary
 TEMPLATE = app
 
-CONFIG += c++11
+CONFIG += c++14
 
 
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -31,7 +31,8 @@ SOURCES += \
     Model/DataStructure/appdata.cpp \
     View/mainpage.cpp \
     Model/Service/postservice.cpp \
-    Util/aes.c
+    Util/aes.c \
+    View/Modal/credentialdialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -49,11 +50,13 @@ HEADERS += \
     Model/DataStructure/appdata.h \
     View/mainpage.h \
     Model/Service/postservice.h \
-    Util/aes.h
+    Util/aes.h \
+    View/Modal/credentialdialog.h
 
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    View/Modal/credentialdialog.ui
 
 RESOURCES += \
     qrc.qrc

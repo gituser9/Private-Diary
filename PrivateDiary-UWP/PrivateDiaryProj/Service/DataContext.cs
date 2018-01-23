@@ -28,7 +28,7 @@ namespace PrivateDiary.Service
 
             
 
-            optionsBuilder.UseSqlite("Filename=PrivateDiary.dbx");
+            optionsBuilder.UseSqlite("Filename=" + Constant.DbName);
         }
     }
 }

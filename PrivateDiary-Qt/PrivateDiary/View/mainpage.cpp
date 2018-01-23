@@ -38,8 +38,14 @@ void MainPage::setupPage(std::shared_ptr<AppData> appData)
     setupToolbar();
     setupTextActions();
 
+    ui->menuBar->show();
+
     ui->btnAddPost->setIcon(QIcon(":/Images/add.png"));
-    ui->btnAddPost->setIconSize(QSize(30, 30));
+    ui->btnAddPost->setIconSize(QSize(20, 20));
+
+    ui->btnDeletePost->setIcon(QIcon(":/Images/delete.png"));
+    ui->btnDeletePost->setIconSize(QSize(20, 20));
+    ui->btnDeletePost->setEnabled(false);
 
     ui->leTitle->hide();
     ui->textEdit->hide();
@@ -63,6 +69,7 @@ void MainPage::setupTextActions()
 
     connect(ui->lvTitleList, &QListView::clicked, this, &MainPage::feedClicked);
     connect(ui->btnAddPost, &QPushButton::clicked, this, &MainPage::addPost);
+    connect(ui->btnDeletePost, &QPushButton::clicked, this, &MainPage::deletePost);
     connect(ui->textEdit, &QTextEdit::textChanged, this, &MainPage::updatePost);
     connect(ui->leTitle, &QLineEdit::textChanged, this, &MainPage::updatePost);
 
@@ -71,6 +78,11 @@ void MainPage::setupTextActions()
     alignGroup->addAction(ui->actionTextCenter);
     alignGroup->addAction(ui->actionTextRight);
     connect(alignGroup, &QActionGroup::triggered, this, &MainPage::textAlign);
+}
+
+void MainPage::refresh()
+{
+    postModel->resetData(postPresenter->getAll());
 }
 
 void MainPage::textBold()
@@ -123,6 +135,8 @@ void MainPage::currentCharFormatChanged(const QTextCharFormat &format)
 
 void MainPage::feedClicked(const QModelIndex &index)
 {
+    ui->btnDeletePost->setEnabled(true);
+
     currentIndex = index;
     currentPost = postModel->getItem(index);
     Post post = postPresenter->getPost(currentPost.id);
@@ -148,11 +162,20 @@ void MainPage::addPost()
 
 void MainPage::updatePost()
 {
+    usleep(1000);
     postPresenter->updatePost(ui->leTitle->text(), ui->textEdit->toHtml(), currentPost.id);
 
     if (ui->leTitle->text() != currentPost.title) {
         currentPost.title = ui->leTitle->text();
         postModel->updateTitle(currentPost.id, ui->leTitle->text(), currentIndex);
+    }
+}
+
+void MainPage::deletePost()
+{
+    if (postPresenter->deletePost(currentPost.id)) {
+        postModel->resetData(postPresenter->getAll());
+        ui->btnDeletePost->setEnabled(false);
     }
 }
 
@@ -191,3 +214,4 @@ void MainPage::colorChanged(const QColor &c)
     QPixmap pix(16, 16);
     pix.fill(c);
 }
+

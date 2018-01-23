@@ -20,7 +20,7 @@
     <PackageCertificateKeyFile>PrivateDiary_StoreKey.pfx</PackageCertificateKeyFile>
     <PackageCertificateThumbprint>0650E7CDA10BCD95566D7DCB4E08528155D33C67</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-    <AppxPackageDir>C:\work\diary\</AppxPackageDir>
+    <AppxPackageDir>C:\Users\vsio\home\builds\private-diary-uwp</AppxPackageDir>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
   </PropertyGroup>

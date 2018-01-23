@@ -1,7 +1,9 @@
 #ifndef MAINPAGE_H
 #define MAINPAGE_H
 
+#include <unistd.h>
 #include <memory>
+
 #include <QObject>
 #include <QTextCharFormat>
 #include <QAction>
@@ -33,6 +35,7 @@ public:
     void setupToolbar();
     void setupPage(std::shared_ptr<AppData> appData);
     void setupTextActions();
+    void refresh();
 
 private:
     Ui::MainWindow *ui;
@@ -46,6 +49,7 @@ private:
     void alignmentChanged(Qt::Alignment a);
     void fontChanged(const QFont &f);
     void colorChanged(const QColor &c);
+
 
 private slots:
     // text formatters
@@ -61,6 +65,7 @@ private slots:
     void feedClicked(const QModelIndex &index);
     void addPost();
     void updatePost();
+    void deletePost();
 
 };
 

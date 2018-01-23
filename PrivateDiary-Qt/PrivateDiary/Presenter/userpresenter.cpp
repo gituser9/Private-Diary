@@ -37,6 +37,19 @@ bool UserPresenter::auth(const QString &login, const QString &password)
     return true;
 }
 
+bool UserPresenter::update(const QString &login, const QString &password)
+{
+    if (login.isEmpty() || password.isEmpty()) {
+        emit showMessage(tr("Login and password is required"));
+        return false;
+    }
+    if (!userService.update(login, password)) {
+        emit showMessage(tr("Update Error"));
+        return false;
+    }
+    return true;
+}
+
 void UserPresenter::setAppData(std::shared_ptr<AppData> appData)
 {
     this->appData = appData;

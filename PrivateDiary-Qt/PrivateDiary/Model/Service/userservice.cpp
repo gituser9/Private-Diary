@@ -14,6 +14,7 @@ bool UserService::registration(const QString &login, const QString &password)
     query.addBindValue(login);
 
     if (!query.exec()) {
+        db.close();
         return false;
     }
 
@@ -21,6 +22,7 @@ bool UserService::registration(const QString &login, const QString &password)
     int count = query.value(0).toInt();
 
     if (count != 0) {
+        db.close();
         return false;
     }
 
@@ -52,6 +54,7 @@ bool UserService::auth(const QString &login, const QString &password)
     query.addBindValue(hashedPassword);
 
     if (!query.exec()) {
+        db.close();
         return false;
     }
 
@@ -63,6 +66,52 @@ bool UserService::auth(const QString &login, const QString &password)
     db.close();
 
     return result;
+}
+
+bool UserService::update(const QString &login, const QString &password)
+{
+    auto db = getDb();
+    QString hashedPassword = hashPassword(password);
+    QSqlQuery query;
+    query.prepare("select login, password from users where id=?");
+    query.addBindValue(appData->getUserId());
+
+    if (!query.exec()) {
+        db.close();
+        return false;
+    }
+
+    query.next();
+    QString currentLogin = query.value(Constant::UserFields::login).toString();
+    QString currentPassword = query.value(Constant::UserFields::password).toString();
+
+    if (login != currentLogin) {
+        query.prepare("update users set login=? where id=?");
+        query.addBindValue(login);
+        query.addBindValue(appData->getUserId());
+
+        if (!query.exec()) {
+            db.close();
+            return false;
+        }
+    }
+    if (hashedPassword != currentPassword) {
+        if (!recryptedPosts(password)) {
+            db.close();
+            return false;
+        }
+
+        query.prepare("update users set password=? where id=?");
+        query.addBindValue(hashedPassword);
+        query.addBindValue(appData->getUserId());
+
+        if (!query.exec()) {
+            db.close();
+            return false;
+        }
+    }
+    db.close();
+    return true;
 }
 
 void UserService::setAppData(std::shared_ptr<AppData> appData)
@@ -122,4 +171,47 @@ void UserService::initDatabase()
     }
 
     db.close();
+}
+
+bool UserService::recryptedPosts(const QString &newPassword)
+{
+    // decrypt with old password
+    crypter.setAppData(appData);
+    QVector<Post> result;
+    QSqlQuery query;
+    query.prepare("select id, title, body from posts where userId=?");
+    query.addBindValue(appData->getUserId());
+
+    if (query.size() > 0) {
+        result.reserve(query.size());
+    }
+    if (!query.exec()) {
+        return false;
+    }
+    while (query.next()) {
+        Post post;
+        post.title = crypter.decrypt(query.value(Constant::PostFields::title).toByteArray());
+        post.id = query.value(Constant::PostFields::id).toInt();
+        post.body = crypter.decrypt(query.value(Constant::PostFields::body).toByteArray());
+        result.append(post);
+    }
+
+    // encrypr with new password
+    appData->setUserPassword(newPassword);
+    crypter.setAppData(appData);
+
+    for (auto &&item : result) {
+        QByteArray encryptedText = crypter.encrypt(item.body);
+        QByteArray encryptedTitle = crypter.encrypt(item.title);
+        query.prepare("update posts set title=:title, body=:body where id=:id");
+        query.bindValue(":id", item.id);
+        query.bindValue(":title", encryptedTitle);
+        query.bindValue(":body", encryptedText);
+
+        if (!query.exec()) {
+            return false;
+        }
+    }
+
+    return true;
 }

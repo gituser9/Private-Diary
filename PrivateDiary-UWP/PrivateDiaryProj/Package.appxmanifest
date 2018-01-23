@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="18073user862.EncryptedDiary" Publisher="CN=AD01D9E0-7313-4C3F-802D-7D2AB6130683" Version="1.1.2.0" />
+  <Identity Name="18073user862.EncryptedDiary" Publisher="CN=AD01D9E0-7313-4C3F-802D-7D2AB6130683" Version="1.1.5.0" />
   <mp:PhoneIdentity PhoneProductId="e3bcfeb6-275a-4570-bcb7-124dc6dcdf6e" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Encrypted Diary</DisplayName>
