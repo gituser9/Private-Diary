@@ -174,8 +174,10 @@ void MainPage::updatePost()
 void MainPage::deletePost()
 {
     if (postPresenter->deletePost(currentPost.id)) {
-        postModel->resetData(postPresenter->getAll());
         ui->btnDeletePost->setEnabled(false);
+        ui->leTitle->hide();
+        ui->textEdit->hide();
+        postModel->resetData(postPresenter->getAll());
     }
 }
 
