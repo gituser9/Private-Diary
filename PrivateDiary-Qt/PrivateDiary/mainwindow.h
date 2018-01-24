@@ -3,10 +3,16 @@
 
 #include <memory>
 #include <QMainWindow>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QDir>
+
 #include "View/loginpage.h"
 #include "View/mainpage.h"
+#include "View/Modal/credentialdialog.h"
 
 #include "Model/DataStructure/appdata.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -39,6 +45,13 @@ private:
 private slots:
     void registration();
     void auth();
+
+    // menu
+    void showCredentialDialog();
+    void downloadDatabase();
+    void uploadDatabase();
+    void exit();
+
 
 };
 

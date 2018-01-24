@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using PrivateDiary.Model;
 
 namespace PrivateDiary.Service
@@ -9,6 +11,8 @@ namespace PrivateDiary.Service
         DbSet<Post> Posts { get; set; }
 
         int SaveChanges();
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
+
     }
 
 
@@ -24,7 +28,7 @@ namespace PrivateDiary.Service
 
             
 
-            optionsBuilder.UseSqlite("Filename=PrivateDiary.dbx");
+            optionsBuilder.UseSqlite("Filename=" + Constant.DbName);
         }
     }
 }

@@ -20,7 +20,7 @@
     <PackageCertificateKeyFile>PrivateDiary_StoreKey.pfx</PackageCertificateKeyFile>
     <PackageCertificateThumbprint>0650E7CDA10BCD95566D7DCB4E08528155D33C67</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-    <AppxPackageDir>C:\work\diary\</AppxPackageDir>
+    <AppxPackageDir>C:\Users\vsio\home\builds\private-diary-uwp</AppxPackageDir>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
   </PropertyGroup>
@@ -101,12 +101,20 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="IoC.cs" />
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="View\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Migrations\20171111162847_PostsTable.cs" />
     <Compile Include="Migrations\20171111162847_PostsTable.designer.cs">
       <DependentUpon>20171111162847_PostsTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20171222195142_AddOrderToPostsTable.cs" />
+    <Compile Include="Migrations\20171222195142_AddOrderToPostsTable.designer.cs">
+      <DependentUpon>20171222195142_AddOrderToPostsTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20171222195840_SetOrderInPostsTable.cs" />
+    <Compile Include="Migrations\20171222195840_SetOrderInPostsTable.designer.cs">
+      <DependentUpon>20171222195840_SetOrderInPostsTable.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Constant.cs" />
     <Compile Include="Model\Post.cs" />
@@ -191,7 +199,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainPage.xaml">
+    <Page Include="View\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

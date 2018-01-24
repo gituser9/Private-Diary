@@ -18,6 +18,7 @@ public:
 
     bool registration(const QString &login, const QString &password);
     bool auth(const QString &login, const QString &password);
+    bool update(const QString &login, const QString &password);
 
     void setAppData(std::shared_ptr<AppData> appData);
 

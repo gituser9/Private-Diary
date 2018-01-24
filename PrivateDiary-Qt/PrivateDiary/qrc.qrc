@@ -9,5 +9,6 @@
         <file>Images/format_underlined.png</file>
         <file>Images/exit_to_app.png</file>
         <file>Images/add.png</file>
+        <file>Images/delete.png</file>
     </qresource>
 </RCC>

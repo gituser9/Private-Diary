@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Core;
@@ -11,7 +12,7 @@ using User = PrivateDiary.Model.User;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
-namespace PrivateDiary
+namespace PrivateDiary.View
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -39,7 +40,7 @@ namespace PrivateDiary
             using (var scope = IoC.Container.BeginLifetimeScope())
             {
                 var service = scope.Resolve<IUserService>();
-                if (service.Registration(LoginTextBox.Text, PasswordTextBox.Password))
+                if (await service.Registration(LoginTextBox.Text, PasswordTextBox.Password))
                 {
                     LoginUser();
                 }
@@ -84,7 +85,7 @@ namespace PrivateDiary
                 Constant.User = user;
                 Constant.Key = PasswordTextBox.Password;
                 var rootFrame = Window.Current.Content as Frame;
-                rootFrame?.Navigate(typeof(View.Posts));
+                rootFrame?.Navigate(typeof(Posts));
             }
         }
         
@@ -103,7 +104,15 @@ namespace PrivateDiary
 
         private void FormKeyDown(CoreWindow sender, KeyEventArgs e)
         {
-            if (e.VirtualKey == VirtualKey.Enter)
+            if (e.VirtualKey != VirtualKey.Enter)
+            {
+                return;
+            }
+
+            var frame = Window.Current.Content as Frame;
+            Type whatpageisit = frame?.SourcePageType;
+
+            if (whatpageisit?.Name == "MainPage")
             {
                 LoginUser();
             }

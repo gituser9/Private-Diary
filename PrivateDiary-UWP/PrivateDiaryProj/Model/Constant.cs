@@ -4,6 +4,7 @@
     {
         public const string DateFormat = "dd MMM yyyy HH:mm";
         public const string DefaultTitle = "New Post";
+        public const string DbName = "PrivateDiary.dbx";
         public const int DefaultFonSizeIndex = 3;
 
         public static string Key = string.Empty;

@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Navigation;
+using Autofac;
 using PrivateDiary.Model;
 using PrivateDiary.Service;
+using System.IO;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -27,8 +32,13 @@ namespace PrivateDiary.View
         public Posts()
         {
             this.InitializeComponent();
+        }
 
-            PostList = new ObservableCollection<Post>(_postService.GetAll()); 
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            
+            var posts = await _postService.GetAll();
+            PostList = new ObservableCollection<Post>(posts);
         }
 
         private async void ShowPost(object sender, SelectionChangedEventArgs e)
@@ -55,6 +65,8 @@ namespace PrivateDiary.View
                 TextBoxTitle.Focus(FocusState.Programmatic);
                 TextBoxTitle.SelectAll();
             }
+
+            ClosePaneButton.Visibility = Visibility;
         }
 
         private void AddPost(object sender, RoutedEventArgs e)
@@ -138,16 +150,6 @@ namespace PrivateDiary.View
             _library.Colour(ref Display, ref Colour);
         }
 
-        /*private void New_Click(object sender, RoutedEventArgs e)
-        {
-            Library.New(Display);
-        }
-
-        private void Open_Click(object sender, RoutedEventArgs e)
-        {
-            Library.Open(Display);
-        }*/
-
         #endregion
 
 
@@ -161,7 +163,7 @@ namespace PrivateDiary.View
             }
             if (string.IsNullOrEmpty(TextBoxTitle.Text))
             {
-                ContentDialog emptyTitle = new ContentDialog
+                var emptyTitle = new ContentDialog
                 {
                     Title = "Title is required",
                     Content = "Enter title for your post.",
@@ -172,9 +174,12 @@ namespace PrivateDiary.View
             }
 
             Display.Document.GetText(TextGetOptions.FormatRtf, out string body);
-
             _postService.Update(body, TextBoxTitle.Text, _currentPost.Id);
-            _currentPost.Title = TextBoxTitle.Text;
+
+            if (_currentPost.Title != TextBoxTitle.Text)
+            {
+                _currentPost.Title = TextBoxTitle.Text;
+            }
         }
 
         private void Grid_RightTapped(object sender, RightTappedRoutedEventArgs e)
@@ -186,19 +191,130 @@ namespace PrivateDiary.View
 
         private async void RemovePost(object sender, RoutedEventArgs e)
         {
-            object datacontext = (e.OriginalSource as FrameworkElement)?.DataContext;
-
-            if (datacontext == null)
-            {
-                return;
-            }
-            if (!(datacontext is Post post))
+            if (_currentPost == null)
             {
                 return;
             }
 
-            await _postService.Delete(post.Id);
-            PostList.Remove(post);
+            await _postService.Delete(_currentPost.Id);
+            PostList.Remove(_currentPost);
+
+            _currentPost = null;
         }
+
+        private void ClosePane(object sender, RoutedEventArgs e)
+        {
+            SplitView.IsPaneOpen = false;
+            OpenPaneButton.Visibility = Visibility.Visible;
+        }
+
+        private void OpenPane(object sender, RoutedEventArgs e)
+        {
+            SplitView.IsPaneOpen = true;
+            OpenPaneButton.Visibility = Visibility.Collapsed;
+        }
+
+        private async void TitleList_OnDragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
+        {
+            if (!(args.Items.First() is Post post))
+            {
+                return;
+            }
+
+            var index = PostList.IndexOf(post);
+            await _postService.UpdatePosition(post.Id, index);
+        }
+
+        private async void ShowEditProfile(object sender, RoutedEventArgs e)
+        {
+            PrepareProfileDialog();
+            var answer = await ProfileDialog.ShowAsync();
+
+            if (answer != ContentDialogResult.Primary)
+            {
+                return;
+            }
+            using (var scope = IoC.Container.BeginLifetimeScope())
+            {
+                SplitView.Visibility = Visibility.Collapsed;
+                ProgressRing.Visibility = Visibility.Visible;
+                var userService = scope.Resolve<IUserService>();
+                var user = await userService.Update(TextBoxLogin.Text, Constant.Key, TextBoxPassword.Password, Constant.User);
+                SplitView.Visibility = Visibility.Visible;
+                ProgressRing.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void TextBoxConfirmPassword_OnPasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (TextBoxPassword.Password.Length == 0)
+            {
+                return;
+            }
+            ProfileDialog.IsPrimaryButtonEnabled = TextBoxPassword.Password == TextBoxConfirmPassword.Password;
+        }
+
+        private void PrepareProfileDialog()
+        {
+            ProfileDialog.IsPrimaryButtonEnabled = false;
+            TextBoxPassword.Password = string.Empty;
+            TextBoxConfirmPassword.Password = string.Empty;
+            TextBoxLogin.Text = string.Empty;
+        }
+
+        private async void DownloadDatabase(object sender, RoutedEventArgs e)
+        {
+            var folderPicker = new Windows.Storage.Pickers.FolderPicker
+            {
+                SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop
+            };
+            folderPicker.FileTypeFilter.Add("*");
+
+            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+
+            if (folder == null)
+            {
+                return;
+            }
+
+            Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+            string dbFilePath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, Constant.DbName);
+
+
+            await Task.Run(() => { File.Copy(dbFilePath, Path.Combine(folder.Path, Constant.DbName)); });
+        }
+
+        private async void UploadDatabase(object sender, RoutedEventArgs e)
+        {
+            var picker = new Windows.Storage.Pickers.FileOpenPicker
+            {
+                ViewMode = Windows.Storage.Pickers.PickerViewMode.List,
+                SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.ComputerFolder
+            };
+            picker.FileTypeFilter.Add(".dbx");
+            Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
+
+            if (file == null)
+            {
+                return;
+            }
+
+            string localFolderPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+            await Task.Run(() =>
+            {
+                File.Copy(file.Path, Path.Combine(localFolderPath, Constant.DbName), true);
+            });
+            var emptyTitle = new ContentDialog
+            {
+                Title = "Restart Application",
+                Content = "Please restart application for use new database.",
+                CloseButtonText = "Ok"
+            };
+            await emptyTitle.ShowAsync();
+
+
+            _currentPost = null;
+        }
+
     }
 }
