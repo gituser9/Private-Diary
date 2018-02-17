@@ -179,9 +179,9 @@ namespace PrivateDiary.View
                 await emptyTitle.ShowAsync();
                 return;
             }
-
+            
             Display.Document.GetText(TextGetOptions.FormatRtf, out string body);
-            _postService.Update(body, TextBoxTitle.Text, _currentPost.Id);
+            await _postService.Update(body, TextBoxTitle.Text, _currentPost.Id);
 
             if (_currentPost.Title != TextBoxTitle.Text)
             {

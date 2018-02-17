@@ -109,7 +109,7 @@ namespace PrivateDiary.Service
             }
         }
 
-        public async void Update(string body, string title, int postId)
+        public async Task Update(string body, string title, int postId)
         {
             using (var db = new DataContext())
             {
