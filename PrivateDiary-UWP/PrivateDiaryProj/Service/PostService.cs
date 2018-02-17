@@ -62,6 +62,37 @@ namespace PrivateDiary.Service
             }
         }
 
+        public async Task<IEnumerable<Post>> Search(string searchString)
+        {
+            using (var db = new DataContext())
+            {
+                var encryptedPosts = await db.Posts.Where(post => post.UserId == Constant.User.Id).OrderBy(entity => entity.Order).ToArrayAsync();
+                var decryptedPosts = new List<Post>(encryptedPosts.Length);
+                var result = new List<Post>();
+
+                foreach (Post encryptedPost in encryptedPosts)
+                {
+                    decryptedPosts.Add(new Post
+                    {
+                        Id = encryptedPost.Id,
+                        UserId = encryptedPost.UserId,
+                        Date = encryptedPost.Date,
+                        Title = Crypter.Decrypt(encryptedPost.Title),
+                        Body = Crypter.Decrypt(encryptedPost.Body)
+                    });
+                }
+                foreach (Post post in decryptedPosts)
+                {
+                    if (post.Title.Contains(searchString) || post.Body.Contains(searchString))
+                    {
+                        result.Add(post);
+                    }    
+                }
+
+                return result;
+            }
+        }
+
         public async Task<Post> Get(int id)
         {
             using (var db = new DataContext())

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Windows.ApplicationModel.DataTransfer;
@@ -59,6 +60,7 @@ namespace PrivateDiary.View
 
             BodyStackPanel.Visibility = Visibility.Visible;
             TextBoxTitle.Visibility = Visibility.Visible;
+            BodySearchBox.Visibility = Visibility.Visible;
 
             if (TextBoxTitle.Text == Constant.DefaultTitle)
             {
@@ -321,63 +323,36 @@ namespace PrivateDiary.View
             _currentPost = null;
         }
 
-        private async void SearchBox_QueryChanged(SearchBox sender, SearchBoxQueryChangedEventArgs args)
+        private void SearchBox_QueryChanged(SearchBox sender, SearchBoxQueryChangedEventArgs args)
         {
-            return;
-            await Task.Delay(TimeSpan.FromSeconds(1));
-            Display.Document.GetText(TextGetOptions.None, out string textStr);
-
             if (string.IsNullOrEmpty(args.QueryText))
             {
-                Display.Document.Selection.StartPosition = 0;
-                Display.Document.Selection.EndPosition = textStr.Length;
-                ITextSelection selectedText = Display.Document.Selection;
-                selectedText.CharacterFormat.BackgroundColor = Windows.UI.Color.FromArgb(0, 255, 255, 255);
-                return;
-            }
-
-
-
-            int myRichEditLength = textStr.Length;
-
-            Display.Document.Selection.SetRange(0, myRichEditLength);
-            int i = 1;
-
-            while (i > 0)
-            {
-                i = Display.Document.Selection.FindText(args.QueryText, myRichEditLength, FindOptions.Case);
-                ITextSelection selectedText = Display.Document.Selection;
-
-                if (selectedText != null)
-                {
-                    selectedText.CharacterFormat.BackgroundColor = Windows.UI.Color.FromArgb(0, 255, 255, 0);
-                }
+                Display.Document.GetText(TextGetOptions.None, out string textStr);
+                ClearSearchSelection(textStr);
             }
         }
 
         private void SearchBox_QuerySubmitted(SearchBox sender, SearchBoxQuerySubmittedEventArgs args)
         {
             Display.Document.GetText(TextGetOptions.None, out string textStr);
+            ClearSearchSelection(textStr);
 
             if (string.IsNullOrEmpty(args.QueryText))
             {
-                ClearSearchSelection(textStr);
                 return;
             }
-
             
-
             int myRichEditLength = textStr.Length;
+            int i = 1;
 
             Display.Document.Selection.SetRange(0, myRichEditLength);
-            int i = 1;
 
             while (i > 0)
             {
                 i = Display.Document.Selection.FindText(args.QueryText, myRichEditLength, FindOptions.Case);
                 ITextSelection selectedText = Display.Document.Selection;
 
-                if (selectedText != null)
+                if (i != 0 && selectedText != null)
                 {
                     selectedText.CharacterFormat.BackgroundColor = Windows.UI.Color.FromArgb(0, 255, 255, 0);
                 }
@@ -390,6 +365,23 @@ namespace PrivateDiary.View
             Display.Document.Selection.EndPosition = textStr.Length;
             ITextSelection selectedText = Display.Document.Selection;
             selectedText.CharacterFormat.BackgroundColor = Windows.UI.Color.FromArgb(0, 255, 255, 255);
+        }
+
+        private async void SearchInPosts(SearchBox sender, SearchBoxQuerySubmittedEventArgs args)
+        {
+            var posts = await _postService.Search(args.QueryText);
+            PostList = new ObservableCollection<Post>(posts);
+            Bindings.Update();
+        }
+
+        private async void SearchInPostsChanged(SearchBox sender, SearchBoxQueryChangedEventArgs args)
+        {
+            if (string.IsNullOrEmpty(args.QueryText))
+            {
+                var posts = await _postService.GetAll();
+                PostList = new ObservableCollection<Post>(posts);
+                Bindings.Update();
+            }
         }
     }
 }
