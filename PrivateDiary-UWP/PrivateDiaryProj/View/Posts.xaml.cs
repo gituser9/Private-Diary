@@ -95,6 +95,11 @@ namespace PrivateDiary.View
 
             Size.SelectedValue = Size.Items[Constant.DefaultFonSizeIndex];
             Colour.SelectedValue = Colour.Items.First();
+
+            BodySearchBox.QueryText = string.Empty;
+            Display.Document.GetText(TextGetOptions.None, out string textStr);
+            ClearSearchSelection(textStr);
+            Save_Click(null, null);
         }
 
 
@@ -316,5 +321,75 @@ namespace PrivateDiary.View
             _currentPost = null;
         }
 
+        private async void SearchBox_QueryChanged(SearchBox sender, SearchBoxQueryChangedEventArgs args)
+        {
+            return;
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            Display.Document.GetText(TextGetOptions.None, out string textStr);
+
+            if (string.IsNullOrEmpty(args.QueryText))
+            {
+                Display.Document.Selection.StartPosition = 0;
+                Display.Document.Selection.EndPosition = textStr.Length;
+                ITextSelection selectedText = Display.Document.Selection;
+                selectedText.CharacterFormat.BackgroundColor = Windows.UI.Color.FromArgb(0, 255, 255, 255);
+                return;
+            }
+
+
+
+            int myRichEditLength = textStr.Length;
+
+            Display.Document.Selection.SetRange(0, myRichEditLength);
+            int i = 1;
+
+            while (i > 0)
+            {
+                i = Display.Document.Selection.FindText(args.QueryText, myRichEditLength, FindOptions.Case);
+                ITextSelection selectedText = Display.Document.Selection;
+
+                if (selectedText != null)
+                {
+                    selectedText.CharacterFormat.BackgroundColor = Windows.UI.Color.FromArgb(0, 255, 255, 0);
+                }
+            }
+        }
+
+        private void SearchBox_QuerySubmitted(SearchBox sender, SearchBoxQuerySubmittedEventArgs args)
+        {
+            Display.Document.GetText(TextGetOptions.None, out string textStr);
+
+            if (string.IsNullOrEmpty(args.QueryText))
+            {
+                ClearSearchSelection(textStr);
+                return;
+            }
+
+            
+
+            int myRichEditLength = textStr.Length;
+
+            Display.Document.Selection.SetRange(0, myRichEditLength);
+            int i = 1;
+
+            while (i > 0)
+            {
+                i = Display.Document.Selection.FindText(args.QueryText, myRichEditLength, FindOptions.Case);
+                ITextSelection selectedText = Display.Document.Selection;
+
+                if (selectedText != null)
+                {
+                    selectedText.CharacterFormat.BackgroundColor = Windows.UI.Color.FromArgb(0, 255, 255, 0);
+                }
+            }
+        }
+
+        private void ClearSearchSelection(string textStr)
+        {
+            Display.Document.Selection.StartPosition = 0;
+            Display.Document.Selection.EndPosition = textStr.Length;
+            ITextSelection selectedText = Display.Document.Selection;
+            selectedText.CharacterFormat.BackgroundColor = Windows.UI.Color.FromArgb(0, 255, 255, 255);
+        }
     }
 }
