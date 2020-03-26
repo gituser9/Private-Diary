@@ -78,6 +78,9 @@ void MainPage::setupTextActions()
     alignGroup->addAction(ui->actionTextCenter);
     alignGroup->addAction(ui->actionTextRight);
     connect(alignGroup, &QActionGroup::triggered, this, &MainPage::textAlign);
+
+    postPresenterThread = new QThread(this);
+    postPresenter->moveToThread(postPresenterThread);
 }
 
 void MainPage::refresh()
@@ -148,9 +151,8 @@ void MainPage::feedClicked(const QModelIndex &index)
     if (post.body.isEmpty()) {
         ui->textEdit->clear();
     } else {
-        ui->textEdit->setText(post.body);
+        ui->textEdit->setHtml(post.body);
     }
-
 }
 
 void MainPage::addPost()
@@ -162,7 +164,6 @@ void MainPage::addPost()
 
 void MainPage::updatePost()
 {
-    usleep(1000);
     postPresenter->updatePost(ui->leTitle->text(), ui->textEdit->toHtml(), currentPost.id);
 
     if (ui->leTitle->text() != currentPost.title) {

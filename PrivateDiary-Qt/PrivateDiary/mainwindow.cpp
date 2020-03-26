@@ -24,8 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionUpload_Database, &QAction::triggered, this, &MainWindow::uploadDatabase);
     connect(ui->actionLogout, &QAction::triggered, this, &MainWindow::exit);
 
-    //ui->stackedWidget->setCurrentIndex(Pages::Main);
-    //setupMainPage();
+//    ui->stackedWidget->setCurrentIndex(Pages::Main);
+//    setupMainPage();
 }
 
 MainWindow::~MainWindow()

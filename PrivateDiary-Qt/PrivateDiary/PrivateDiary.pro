@@ -13,6 +13,7 @@ TARGET = PrivateDiary
 TEMPLATE = app
 
 CONFIG += c++14
+CONFIG += app_bundle
 
 
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -60,3 +61,5 @@ FORMS += \
 
 RESOURCES += \
     qrc.qrc
+
+ICON = logo-mac.icns

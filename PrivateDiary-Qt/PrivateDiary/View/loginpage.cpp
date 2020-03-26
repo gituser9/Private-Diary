@@ -15,7 +15,7 @@ LoginPage::~LoginPage()
 
 void LoginPage::showAlert(const QString &message)
 {
-    QMessageBox::warning(0, tr("Error"), message, QMessageBox::Ok);
+    QMessageBox::warning(nullptr, tr("Error"), message, QMessageBox::Ok);
 }
 
 bool LoginPage::registration(const QString &login, const QString &password) const

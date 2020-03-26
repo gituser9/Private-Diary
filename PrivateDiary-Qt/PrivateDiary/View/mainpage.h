@@ -13,6 +13,7 @@
 #include <QIcon>
 #include <QStringList>
 #include <QModelIndexList>
+#include <QThread>
 
 #include "ui_mainwindow.h"
 
@@ -44,6 +45,7 @@ private:
     std::shared_ptr<AppData> appData;
     Post currentPost;
     QModelIndex currentIndex;
+    QThread *postPresenterThread;
 
     void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
     void alignmentChanged(Qt::Alignment a);

@@ -1,5 +1,5 @@
 #ifndef POSTMODEL_H
-#define POSTPOSTMODEL_H
+#define POSTMODEL_H
 
 #include <memory>
 #include <QObject>
@@ -17,8 +17,8 @@ class PostModel : public QStringListModel
 
     Q_OBJECT
 public:
-    explicit PostModel(QObject *parent = 0);
-    explicit PostModel(const QStringList & strings, QObject *parent = 0);
+    explicit PostModel(QObject *parent = nullptr);
+    explicit PostModel(const QStringList & strings, QObject *parent = nullptr);
 
 //    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 //    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
