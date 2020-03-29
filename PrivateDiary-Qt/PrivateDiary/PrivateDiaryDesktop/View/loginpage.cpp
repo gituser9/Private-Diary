@@ -20,19 +20,23 @@ void LoginPage::showAlert(const QString &message)
 
 bool LoginPage::registration(const QString &login, const QString &password) const
 {
-    if (!userPresenter->registration(login, password)) {
-//        emit this->showAlert("Registration error");
+    int id = userPresenter->registration(login, password);
+
+    if (id == 0) {
         return false;
     }
+
     return true;
 }
 
 bool LoginPage::auth(const QString &login, const QString &password) const
 {
-    if (!userPresenter->auth(login, password)) {
-        //ßshowAlert("Registration error");
+    int id = userPresenter->auth(login, password);
+
+    if (id == 0) {
         return false;
     }
+
     return true;
 }
 

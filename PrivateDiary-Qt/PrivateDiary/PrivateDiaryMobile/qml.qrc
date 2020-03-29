@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>common/AppPage.qml</file>
+        <file>common/RoundedButton.qml</file>
+        <file>common/RoundTextField.qml</file>
+        <file>common/Util.qml</file>
+        <file>login/Login.qml</file>
+        <file>common/Constant.qml</file>
+        <file>post_list/PostList.qml</file>
+        <file>post_view/PostView.qml</file>
+        <file>common/IconButton.qml</file>
+        <file>images/add.svg</file>
+        <file>images/arrow_back.svg</file>
+        <file>images/arrow_back_ios.svg</file>
+        <file>images/format_bold.svg</file>
+        <file>images/format_italic.svg</file>
+        <file>images/format_underlined.svg</file>
+        <file>post_view/EditPanel.qml</file>
+        <file>images/format_align_right.svg</file>
+        <file>images/format_align_center.svg</file>
+        <file>images/format_align_left.svg</file>
+        <file>images/trash-f.svg</file>
+    </qresource>
+</RCC>
