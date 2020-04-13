@@ -1,4 +1,7 @@
 #include "userservice.h"
+#include "Syncer/qjsonwebtoken.h"
+#include <QJsonValue>
+#include <QDebug>
 
 
 UserService::UserService()
@@ -8,6 +11,7 @@ UserService::UserService()
 
 int UserService::registration(const QString &login, const QString &password)
 {
+    // todo: check is exist
     auto db = getDb();
     QSqlQuery query;
     query.prepare("select count(*) from users where login=?");
@@ -64,9 +68,19 @@ int UserService::auth(const QString &login, const QString &password)
 
     query.next();
     int id = query.value(Constant::UserFields::id).toInt();
-    appData->setUserId(id);
-
     db.close();
+
+    appData->setUserId(id);
+    auto userSign = QCryptographicHash::hash(appData->getUserPassword().toUtf8(), QCryptographicHash::Sha512).toHex();
+    QJsonWebToken jwt;
+    qint64 days = QDateTime::currentDateTime().addDays(Constant::tokenLifetime).toTime_t();
+    jwt.appendClaim("id", QJsonValue(id));
+    jwt.appendClaim("sign", QJsonValue(QString(userSign)));
+    jwt.appendClaim("exp", QJsonValue(days));
+    jwt.setSecret(AppSecret::jwtSign);
+    Constant::jwt = jwt.getToken();
+    Constant::token = jwt;
+
     return id;
 }
 

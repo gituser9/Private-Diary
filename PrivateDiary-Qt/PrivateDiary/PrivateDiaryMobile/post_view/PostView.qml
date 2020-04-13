@@ -2,7 +2,6 @@ import QtQuick 2.13
 import QtQuick.Controls 2.13
 
 import StatusBar 0.1
-import PostPresenter 0.1
 import PostModel 0.1
 
 import '../common'
@@ -21,6 +20,8 @@ AppPage {
     readonly property string iconColor: '#4D5A6F'
 
 
+
+    id: postPage
     statusBarTheme: StatusBar.Dark
 
 
@@ -28,12 +29,17 @@ AppPage {
         postModel.setAppData(userModel.id, userModel.password)
         postModel.load(post.id)
         isCompleted = true
+        taskTimer.start()
+
+    }
+    Component.onDestruction: {
+        postModel.updatePost(post.id, titleTextArea.text, textArea.text, true)
     }
 
 
     header: Rectangle {
         id: headerItem
-        height: util.getPlatformValue(80, 60)
+        height: util.getPlatformValue(100, 60)
         color: constant.colors.darkBlue
         width: parent.width
 
@@ -74,10 +80,31 @@ AppPage {
             }
         }
     }
+
+    Timer {
+        id: taskTimer
+        interval: (1000 * 60) * 5
+        running: false
+        repeat: true
+        onTriggered: {
+            postModel.updatePost(post.id, titleTextArea.text, textArea.text, true)
+        }
+    }
+
+
     Column {
         anchors.fill: parent
+
+        EditPanel {
+            id: editPanel
+            width: parent.width
+            height: 60
+            textArea: textArea
+        }
         TextArea {
             id: titleTextArea
+            anchors.top: editPanel.bottom
+            width: parent.width
             textFormat: Qt.PlainText
             wrapMode: TextArea.Wrap
             focus: false
@@ -96,7 +123,7 @@ AppPage {
                 if (!isCompleted) {
                     return
                 }
-                postModel.updatePost(post.id, titleTextArea.text, textArea.text)
+                postModel.updatePost(post.id, titleTextArea.text, textArea.text, false)
             }
         }
 
@@ -104,19 +131,23 @@ AppPage {
             id: flickable
             flickableDirection: Flickable.VerticalFlick
             width: parent.width
-            height: parent.height - editPanel.height - titleTextArea.height
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.left: parent.left
+            anchors.top: titleTextArea.bottom
 
             TextArea.flickable: TextArea {
                 id: textArea
+                width: parent.width
                 textFormat: Qt.RichText
                 wrapMode: TextArea.Wrap
-                focus: true
-                selectByMouse: true
+                focus: false
+                selectByMouse: false
                 persistentSelection: true
                 leftPadding: 6
                 rightPadding: 6
                 topPadding: 6
-                bottomPadding: 0
+                bottomPadding: 16
                 background: null
                 onLinkActivated: Qt.openUrlExternally(link)
                 text: postModel.body
@@ -124,16 +155,10 @@ AppPage {
                     if (!isCompleted) {
                         return
                     }
-                    postModel.updatePost(post.id, titleTextArea.text, textArea.text)
+                    postModel.updatePost(post.id, titleTextArea.text, textArea.text, false)
                 }
 
             }
-        }
-        EditPanel {
-            id: editPanel
-            width: parent.width
-            height: 60
-            textArea: textArea
         }
     }
 

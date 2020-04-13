@@ -2,6 +2,7 @@
 #define USERSERVICE_H
 
 #include <memory>
+#include <cstdlib>
 
 #include <QString>
 #include <QtSql>
@@ -10,6 +11,7 @@
 #include "Model/DataStructure/constant.h"
 #include "Model/DataStructure/appdata.h"
 #include "Model/DataStructure/post.h"
+#include "Model/DataStructure/appsecret.h"
 #include <Util/crypter.h>
 
 

@@ -4,6 +4,9 @@ PostPresenter::PostPresenter(QObject *parent) : QObject (parent)
 {
     serviceThread = new QThread(this);
 //    postService.move
+
+    connect(&postService, &PostService::getListFromServer, this, &PostPresenter::setPostsSlot);
+    connect(&postService, &PostService::getFromServer, this, &PostPresenter::setPostSlot);
 }
 
 PostPresenter::~PostPresenter()
@@ -28,7 +31,7 @@ Post PostPresenter::createPost(const QString &title, const QString &text)
     return post;
 }
 
-bool PostPresenter::updatePost(const QString &title, const QString &text, const int id)
+bool PostPresenter::updatePost(const QString &title, const QString &text, const int id, bool withSync)
 {
     if (title.isEmpty()) {
         emit showAlert(tr("Title is required"));
@@ -36,7 +39,7 @@ bool PostPresenter::updatePost(const QString &title, const QString &text, const 
     }
     QByteArray encryptedText = crypter.encrypt(text);
     QByteArray encryptedTitle = crypter.encrypt(title);
-    return postService.updatePost(encryptedTitle, encryptedText, id);
+    return postService.updatePost(encryptedTitle, encryptedText, id, withSync);
 }
 
 bool PostPresenter::deletePost(const int id)
@@ -52,11 +55,7 @@ Post PostPresenter::getPost(const int id)
     if (id <= 0) {
         return Post();
     }
-
-    // TODO: decryption must be here
-    Post post = postService.get(id);
-
-    return post;
+    return postService.get(id);
 }
 
 void PostPresenter::setAppData(const int id, const QString &password)
@@ -71,13 +70,15 @@ void PostPresenter::setAppData(const int id, const QString &password)
 
 QVector<Post> PostPresenter::getAll()
 {
-    return postService.getPosts(appData->getUserId());
+    posts = postService.getPosts(appData->getUserId());
+    return posts;
 }
 
 void PostPresenter::setAppData(std::shared_ptr<AppData> appData)
 {
     this->appData = appData;
     crypter.setAppData(appData);
+    postService.setAppData(appData);
     postService.setCrypter(crypter);
 }
 
@@ -89,4 +90,44 @@ void PostPresenter::updatePostPosition(const int postId, const int position)
     if (!postService.updatePostPosition(postId, position)) {
         emit showAlert(tr("Reorder error"));
     }
+}
+
+void PostPresenter::setPostsSlot(QVector<Post> newPosts)
+{
+    QVector<Post>::const_iterator begin = newPosts.begin();
+    QVector<Post>::const_iterator end = newPosts.end();
+
+    // update existig posts
+    for (Post &post : posts) {
+        auto findedPostIt = std::find_if(begin, end, [&](auto p) {
+            return p.id == post.id;
+        });
+        if (findedPostIt != end && post.title != findedPostIt->title) {
+            post.title = findedPostIt->title;
+            postService.updateTitlePost(post.title, post.id);
+        } else  {
+            // upload
+            postService.upload(post.id);
+        }
+    }
+
+    // add new posts
+    begin = posts.begin();
+    end = posts.end();
+
+    for (Post &post : newPosts) {
+        auto findedPostIt = std::find_if(begin, end, [&](auto p) {
+            return p.id == post.id;
+        });
+        if (findedPostIt == end) {
+            posts.append(*findedPostIt);
+        }
+    }
+
+    emit setPosts(posts);
+}
+
+void PostPresenter::setPostSlot(Post newPost)
+{
+    emit setPost(newPost);
 }

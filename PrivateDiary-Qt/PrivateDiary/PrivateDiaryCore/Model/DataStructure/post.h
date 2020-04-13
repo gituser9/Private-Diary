@@ -2,6 +2,11 @@
 #define POST_H
 
 #include <QString>
+#include <QByteArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QVariant>
 
 
 class Post
@@ -9,7 +14,7 @@ class Post
 public:
     QString title;
     QString body;
-    long date;
+    qint64 date;
     int id;
     int userId;
     int order;
@@ -30,6 +35,9 @@ public:
        title = newTitle;
        body = "";
     }
+
+    QByteArray toJson() const;
+    static Post fromJson(const QJsonValue &json);
 };
 
 #endif // POST_H

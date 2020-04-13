@@ -6,14 +6,13 @@ import StatusBar 0.1
 
 Page {
     id: appPage
-    anchors.fill: parent
+//    anchors.fill: parent
     header: Rectangle {
         id: appPageHeader
     }
 
     property int statusBarTheme
     property bool isNeedEmptyHeader: false
-    readonly property Constant constant: Constant{}
     readonly property Util util: Util{}
 
 

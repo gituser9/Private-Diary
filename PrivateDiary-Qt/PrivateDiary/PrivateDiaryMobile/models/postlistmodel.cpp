@@ -3,6 +3,8 @@
 PostListModel::PostListModel(QObject *parent) : QAbstractListModel(parent)
 {
     appData = std::make_shared<AppData>();
+
+    connect(&presenter, &PostPresenter::setPosts, this, &PostListModel::setDataSlot);
 }
 
 
@@ -32,42 +34,6 @@ QVariant PostListModel::data(const QModelIndex &index, int role) const
         return {};
     }
 }
-
-//bool PostListModel::setData(const QModelIndex &index, const QVariant &value, int role)
-//{
-//    if (data(index, role) != value) {
-//        // FIXME: Implement me!
-//        emit dataChanged(index, index, QVector<int>() << role);
-//        return true;
-//    }
-//    return false;
-//}
-
-//Qt::ItemFlags PostListModel::flags(const QModelIndex &index) const
-//{
-//    if (!index.isValid())
-//        return Qt::NoItemFlags;
-
-//    return Qt::ItemIsEditable; // FIXME: Implement me!
-//}
-
-//bool PostListModel::insertRows(int row, int count, const QModelIndex &parent)
-//{
-//    beginInsertRows(parent, row, row + count - 1);
-//    posts.append(post);
-//    endInsertRows();
-
-//    return true;
-//}
-
-//bool PostListModel::removeRows(int row, int count, const QModelIndex &parent)
-//{
-//    beginRemoveRows(parent, row, row + count - 1);
-//    posts.removeAt(row);
-//    endRemoveRows();
-
-//    return true;
-//}
 
 QHash<int, QByteArray> PostListModel::roleNames() const
 {
@@ -133,6 +99,13 @@ void PostListModel::remove(const int id)
 
     this->beginResetModel();
     posts.removeAt(index);
+    this->endResetModel();
+}
+
+void PostListModel::setDataSlot(QVector<Post> newPosts)
+{
+    this->beginResetModel();
+    posts = newPosts;
     this->endResetModel();
 }
 

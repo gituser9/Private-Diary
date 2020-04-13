@@ -21,8 +21,7 @@ public:
     explicit PostModel(QObject *parent = nullptr);
 
     // Basic functionality:
-    QModelIndex index(int row, int column,
-                      const QModelIndex &parent = QModelIndex()) const override;
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &index) const override;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -31,14 +30,13 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     // Editable:
-    bool setData(const QModelIndex &index, const QVariant &value,
-                 int role = Qt::EditRole) override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
     Qt::ItemFlags flags(const QModelIndex& index) const override;
 
     Q_INVOKABLE void setAppData(const int id, const QString &password);
     Q_INVOKABLE void load(const int id);
-    Q_INVOKABLE void updatePost(const int id, const QString &title, const QString &body);
+    Q_INVOKABLE void updatePost(const int id, const QString &title, const QString &body, bool withSync);
 
     QString title() const;
     QString body() const;
@@ -46,6 +44,7 @@ public:
 public slots:
     void setTitle(QString title);
     void setBody(QString body);
+    void setDataSlot(Post newPost);
 
 signals:
     void titleChanged(QString title);

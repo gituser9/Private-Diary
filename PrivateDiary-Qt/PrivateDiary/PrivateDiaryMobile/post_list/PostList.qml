@@ -42,7 +42,7 @@ AppPage {
         header: Rectangle {
             id: headerItem
             color: constant.colors.darkBlue
-            height: util.getPlatformValue(80, 60)
+            height: util.getPlatformValue(100, 60)
 
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter

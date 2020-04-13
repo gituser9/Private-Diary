@@ -157,14 +157,16 @@ void MainPage::feedClicked(const QModelIndex &index)
 
 void MainPage::addPost()
 {
-    if (postPresenter->createPost(Constant::defaultTitle, QString())) {
+    Post post = postPresenter->createPost(Constant::defaultTitle, QString());
+
+    if (post.id != 0) {
         postModel->resetData(postPresenter->getAll());
     }
 }
 
 void MainPage::updatePost()
 {
-    postPresenter->updatePost(ui->leTitle->text(), ui->textEdit->toHtml(), currentPost.id);
+    postPresenter->updatePost(ui->leTitle->text(), ui->textEdit->toHtml(), currentPost.id, false);
 
     if (ui->leTitle->text() != currentPost.title) {
         currentPost.title = ui->leTitle->text();

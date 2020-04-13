@@ -253,3 +253,4 @@ CMakeLists.txt.user*
 
 
 .*
+appsecret.h

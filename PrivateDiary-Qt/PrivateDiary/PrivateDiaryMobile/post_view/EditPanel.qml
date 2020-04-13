@@ -12,7 +12,6 @@ Rectangle {
     width: parent.width
     height: 60
 
-//            color: 'blue'
 
     GridLayout {
         anchors.fill: parent
@@ -27,12 +26,13 @@ Rectangle {
             iconHeight: 30
             anchors.verticalCenter: headerRow.verticalCenter
             onTap: {
-                let position = textArea.selectionEnd
-                textArea.text = textArea.text.replace(textArea.selectedText, "<div style='font-weight:600;'>"+textArea.selectedText+'</div>')
-                textArea.cursorPosition = position
+                let start = textArea.selectionStart
+                let end = textArea.selectionEnd
+                let text = textArea.selectedText.toString()
 
-
-
+                textArea.remove(start, end)
+                textArea.insert(start, "<div style='font-weight:600;'>"+text+'</div>')
+                textArea.cursorPosition = end
             }
         }
         IconButton {
@@ -44,11 +44,13 @@ Rectangle {
             iconHeight: 30
             anchors.verticalCenter: headerRow.verticalCenter
             onTap: {
-                let position = textArea.selectionEnd
-                textArea.text = textArea.text.replace(textArea.selectedText, "<div style='font-style:italic;'>"+textArea.selectedText+'</div>')
-                textArea.cursorPosition = position
+                let start = textArea.selectionStart
+                let end = textArea.selectionEnd
+                let text = textArea.selectedText.toString()
 
-
+                textArea.remove(start, end)
+                textArea.insert(start, "<div style='font-style:italic;'>"+text+'</div>')
+                textArea.cursorPosition = end
             }
         }
         IconButton {
@@ -60,9 +62,13 @@ Rectangle {
             iconHeight: 30
             anchors.verticalCenter: headerRow.verticalCenter
             onTap: {
-                let position = textArea.selectionEnd
-                textArea.text = textArea.text.replace(textArea.selectedText, "<div style='text-decoration: underline;'>"+textArea.selectedText+'</div>')
-                textArea.cursorPosition = position
+                let start = textArea.selectionStart
+                let end = textArea.selectionEnd
+                let text = textArea.selectedText.toString()
+
+                textArea.remove(start, end)
+                textArea.insert(start, "<div style='text-decoration: underline;'>"+text+'</div>')
+                textArea.cursorPosition = end
             }
         }
 
@@ -80,9 +86,13 @@ Rectangle {
             iconHeight: 30
             anchors.verticalCenter: headerRow.verticalCenter
             onTap: {
-                let position = textArea.selectionEnd
-                textArea.text = textArea.text.replace(textArea.selectedText, "<div align='left'>"+textArea.selectedText+'</div>')
-                textArea.cursorPosition = position
+                let start = textArea.selectionStart
+                let end = textArea.selectionEnd
+                let text = textArea.selectedText.toString()
+
+                textArea.remove(start, end)
+                textArea.insert(start, "<div align='left'>"+text+'</div>')
+                textArea.cursorPosition = end
             }
         }
         IconButton {
@@ -94,9 +104,13 @@ Rectangle {
             iconHeight: 30
             anchors.verticalCenter: headerRow.verticalCenter
             onTap: {
-                let position = textArea.selectionEnd
-                textArea.text = textArea.text.replace(textArea.selectedText, "<div align='center'>"+textArea.selectedText+'</div>')
-                textArea.cursorPosition = position
+                let start = textArea.selectionStart
+                let end = textArea.selectionEnd
+                let text = textArea.selectedText.toString()
+
+                textArea.remove(start, end)
+                textArea.insert(start, "<div align='center'>"+text+'</div>')
+                textArea.cursorPosition = end
             }
         }
         IconButton {
@@ -108,13 +122,16 @@ Rectangle {
             iconHeight: 30
             anchors.verticalCenter: headerRow.verticalCenter
             onTap: {
-                let position = textArea.selectionEnd
-                textArea.text = textArea.text.replace(textArea.selectedText, "<div align='right'>"+textArea.selectedText+'</div>')
-                textArea.cursorPosition = position
+                let start = textArea.selectionStart
+                let end = textArea.selectionEnd
+                let text = textArea.selectedText.toString()
 
-//                console.log(textArea.text)
+                textArea.remove(start, end)
+                textArea.insert(start, "<div align='right'>"+text+'</div>')
+                textArea.cursorPosition = end
             }
         }
     }
+
 }
 

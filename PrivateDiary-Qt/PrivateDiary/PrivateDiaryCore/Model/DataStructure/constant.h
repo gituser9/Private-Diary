@@ -4,11 +4,16 @@
 #include <QString>
 #include <QDir>
 #include <QStandardPaths>
+#include "Syncer/qjsonwebtoken.h"
 
 
 namespace Constant {
     const QString defaultTitle = "New Post";
     const QString dbName = "PrivateDiary.dbx";
+    const QString fbHost = "http://35.243.166.217/pd/";
+    const int tokenLifetime = 1; // days
+    static QString jwt = "";    // todo: move
+    static QJsonWebToken token;
 
 #ifdef Q_OS_MACOS
     const QString dbPath = QDir::homePath() + "/" + dbName;

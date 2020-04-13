@@ -6,6 +6,8 @@ INCLUDEPATH += $$PWD
 CONFIG += c++17
 
 SOURCES += \
+    $$PWD/Syncer/qjsonwebtoken.cpp \
+    $$PWD/Syncer/syncer.cpp \
     $$PWD/privatediarycore.cpp \
     $$PWD/Model/DataStructure/post.cpp \
     $$PWD/Presenter/postpresenter.cpp \
@@ -18,6 +20,8 @@ SOURCES += \
     $$PWD/Util/aes.c
 
 HEADERS += \
+    $$PWD/Syncer/qjsonwebtoken.h \
+    $$PWD/Syncer/syncer.h \
     $$PWD/PrivateDiaryCore_global.h \
     $$PWD/privatediarycore.h \
     $$PWD/Model/DataStructure/post.h \

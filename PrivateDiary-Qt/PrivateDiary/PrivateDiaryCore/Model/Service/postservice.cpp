@@ -6,11 +6,24 @@ PostService::PostService()
 {
     db = getDb();
     updatePrepare = QSqlQuery(db);
+    updateTitlePrepare = QSqlQuery(db);
 
     if (!updatePrepare.prepare("update posts set title = :title, body = :body where id = :id")) {
         qDebug() << db.lastError().text();
         return;
     }
+    if (!updateTitlePrepare.prepare("update posts set title = :title where id = :id")) {
+        qDebug() << db.lastError().text();
+        return;
+    }
+
+    syncerThread = new QThread(this);
+    syncer = new Syncer(this);
+
+    connect(syncer, &Syncer::readAllFinished, this, &PostService::getListSlot);
+    connect(syncer, &Syncer::readFinished, this, &PostService::getSlot);
+
+    syncer->moveToThread(syncerThread);
 }
 
 PostService::~PostService()
@@ -44,10 +57,23 @@ Post PostService::createPost(const QString &title, const QString &text, const in
         return Post();
     }
 
-    return get(insertedId);
+    Post post = get(insertedId);
+    Post syncedPost = post;
+    syncedPost.title = crypter.encrypt(title).toHex();
+    syncer->post("posts", syncedPost.toJson());
+
+    return post;
 }
 
-bool PostService::updatePost(const QByteArray &title, const QByteArray &text, const int id)
+void PostService::upload(const int id)
+{
+    Post post = get(id);
+    post.title = crypter.encrypt(post.title).toHex();
+    post.body = crypter.encrypt(post.body).toHex();
+    syncer->post("posts", post.toJson());
+}
+
+bool PostService::updatePost(const QByteArray &title, const QByteArray &text, const int id, bool withSyc)
 {
     if (!db.isOpen()) {
         db = getDb();
@@ -60,6 +86,13 @@ bool PostService::updatePost(const QByteArray &title, const QByteArray &text, co
     if (!updatePrepare.exec()) {
         qDebug() << db.lastError().text();
         return false;
+    }
+
+    if (withSyc) {
+        Post post = get(id);
+        post.title = title.toHex();
+        post.body = text.toHex();
+        syncer->put(QString("posts/%1").arg(id), post.toJson());
     }
 
     return true;
@@ -78,6 +111,23 @@ bool PostService::updatePostPosition(const int postId, const int position)
     return query.exec();
 }
 
+bool PostService::updateTitlePost(const QString &title, const int id)
+{
+    if (!db.isOpen()) {
+        db = getDb();
+    }
+
+    updateTitlePrepare.bindValue(":id", id);
+    updateTitlePrepare.bindValue(":title", title);
+
+    if (!updateTitlePrepare.exec()) {
+        qDebug() << db.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
 bool PostService::deletePost(const int id)
 {
     if (!db.isOpen()) {
@@ -87,6 +137,8 @@ bool PostService::deletePost(const int id)
     QSqlQuery query;
     query.prepare("delete from posts where id=?");
     query.addBindValue(id);
+
+    syncer->remove(QString("posts/%1").arg(id));
 
     return query.exec();
 }
@@ -117,6 +169,7 @@ QVector<Post> PostService::getPosts(const int userId)
         result.append(post);
     }
 
+    syncer->get("posts", Syncer::NetworkAction::ReadAll);
     return result;
 }
 
@@ -124,7 +177,7 @@ Post PostService::get(const int id)
 {
     Post post;
     QSqlQuery query;
-    query.prepare("select title, body from posts where id=?");
+    query.prepare("select title, body, userId, date from posts where id=?");
     query.addBindValue(id);
 
     if (!query.exec()) {
@@ -136,6 +189,11 @@ Post PostService::get(const int id)
     post.id = id;
     post.title = crypter.decrypt(query.value(Constant::PostFields::title).toByteArray());
     post.body = crypter.decrypt(query.value(Constant::PostFields::body).toByteArray());
+    post.userId = query.value("userId").toInt();
+    post.order = 0;
+    post.date = query.value("date").toInt();
+
+    syncer->get(QString("posts/%1").arg(id), Syncer::NetworkAction::Read);
 
     return post;
 }
@@ -144,6 +202,56 @@ void PostService::setCrypter(const Crypter &crypter)
 {
     // TODO: must be on presenter only
     this->crypter = crypter;
+}
+
+void PostService::setAppData(std::shared_ptr<AppData> appData)
+{
+    this->appData = appData;
+    syncer->setAppData(appData);
+}
+
+void PostService::created(const QJsonObject &response)
+{
+    qDebug() << response;
+}
+
+void PostService::getListSlot(const QJsonArray &response)
+{
+    if (response.isEmpty()) {
+        return;
+    }
+
+    QVector<Post> posts;
+    posts.reserve(response.size());
+
+
+    for (auto &&postJson : response) {
+        const QByteArray titleData = postJson["title"].toVariant().toByteArray();
+
+        Post post;
+        post.id = postJson["id"].toInt();
+        post.title = crypter.decrypt(QByteArray::fromHex(titleData));
+
+        posts.append(post);
+    }
+
+    emit getListFromServer(posts);
+}
+
+void PostService::getSlot(const QJsonObject &response)
+{
+    const QByteArray titleData = response["title"].toVariant().toByteArray();
+    const QByteArray bodyData = response["body"].toVariant().toByteArray();
+
+    Post post;
+    post.id = response["id"].toInt();
+    post.title = crypter.decrypt(QByteArray::fromHex(titleData));
+    post.body = crypter.decrypt(QByteArray::fromHex(bodyData));
+    post.date = response["date"].toVariant().toLongLong();
+    post.order = response["order"].toInt();
+    post.userId = response["userId"].toInt();
+
+    emit getFromServer(post);
 }
 
 QSqlDatabase PostService::getDb()

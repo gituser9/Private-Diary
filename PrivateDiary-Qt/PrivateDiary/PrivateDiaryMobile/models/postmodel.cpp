@@ -3,16 +3,18 @@
 PostModel::PostModel(QObject *parent) : QAbstractItemModel(parent)
 {
     appData = std::make_shared<AppData>();
+
+    connect(&presenter, &PostPresenter::setPost, this, &PostModel::setDataSlot);
 }
 
 QModelIndex PostModel::index(int row, int column, const QModelIndex &parent) const
 {
-    // FIXME: Implement me!
+
 }
 
 QModelIndex PostModel::parent(const QModelIndex &index) const
 {
-    // FIXME: Implement me!
+
 }
 
 int PostModel::rowCount(const QModelIndex &parent) const
@@ -71,9 +73,9 @@ void PostModel::load(const int id)
     setTitle(post.title);
 }
 
-void PostModel::updatePost(const int id, const QString &title, const QString &body)
+void PostModel::updatePost(const int id, const QString &title, const QString &body, bool withSync)
 {
-    presenter.updatePost(title, body, id);
+    presenter.updatePost(title, body, id, withSync);
 }
 
 QString PostModel::title() const
@@ -102,4 +104,10 @@ void PostModel::setBody(QString body)
 
     m_body = body;
     emit bodyChanged(m_body);
+}
+
+void PostModel::setDataSlot(Post newPost)
+{
+    setTitle(newPost.title);
+    setBody(newPost.body);
 }

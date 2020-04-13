@@ -1,5 +1,5 @@
 QT -= gui
-QT += sql
+QT += sql network core
 
 TARGET = PrivateDiaryCore
 TEMPLATE = lib
@@ -22,6 +22,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Syncer/qjsonwebtoken.cpp \
+    Syncer/syncer.cpp \
     privatediarycore.cpp \
     Model/DataStructure/post.cpp \
     Presenter/postpresenter.cpp \
@@ -34,6 +36,9 @@ SOURCES += \
     Util/aes.c \
 
 HEADERS += \
+    Model/DataStructure/appsecret.h \
+    Syncer/qjsonwebtoken.h \
+    Syncer/syncer.h \
     PrivateDiaryCore_global.h \
     privatediarycore.h \
     Model/DataStructure/post.h \
